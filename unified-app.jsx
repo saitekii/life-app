@@ -81,6 +81,93 @@ const ACTIONS = {
   ],
 };
 
+const AREA_ACTIONS = {
+  physical: [
+    "Go for a walk outside for twenty minutes — no destination required.",
+    "Cook or prepare a real meal from scratch, even a simple one.",
+    "Do a body-scan stretch: lie on the floor and spend fifteen minutes moving slowly through every part that feels tight.",
+    "Go to bed right now, an hour earlier than usual, and read until you fall asleep.",
+    "Step outside and move your body for thirty minutes — walk, jog, bike, whatever costs no thought.",
+  ],
+  stability: [
+    "Spend twenty minutes writing down every open loop in your head — bills, tasks, things you said you'd do — just to see them.",
+    "Tidy one room completely: put things back, clear surfaces, take out the trash.",
+    "Look at your bank balance and recent transactions and spend fifteen minutes understanding where you actually are financially.",
+    "Write down three routines you want to have this week and put them somewhere visible.",
+    "Cancel, defer, or delegate one thing that's been sitting on your plate making you feel behind.",
+  ],
+  autonomy: [
+    "Spend thirty minutes doing something you've been wanting to do purely for yourself that you keep deprioritizing.",
+    "Write for twenty minutes about what you actually want your days to look like right now — no editing, no judgment.",
+    "Say no to something this week: draft the message or the conversation, even if you haven't sent it yet.",
+    "Block off two hours in your calendar in the next few days that belong entirely to you.",
+    "Make one decision today entirely on your own terms, without asking anyone else what they think.",
+  ],
+  relationships: [
+    "Call someone you've been meaning to call — not a text, a real call — and plan to talk for at least twenty minutes.",
+    "Make specific plans with someone: pick a date, a place, something to do, and send the message right now.",
+    "Write a message to someone telling them something specific you appreciate about them.",
+    "Spend twenty minutes thinking about one relationship that's felt distant and write what you'd like it to look like.",
+    "Show up somewhere you used to go regularly — a class, a group, a friend's place — without overthinking it.",
+  ],
+  intimacy: [
+    "Have a real conversation with someone you trust about something you've been carrying — not a vent, an honest exchange.",
+    "Write for twenty minutes about something you feel but haven't said out loud to anyone yet.",
+    "Ask someone close to you a question you actually want to know the answer to, and then just listen.",
+    "Tell someone in your life something true about how you're doing, more honestly than you usually do.",
+    "Spend thirty minutes with someone you care about with no phones, no screens — just being present with them.",
+  ],
+  recognition: [
+    "Write down ten things you've done in the last month that mattered — work, personal, anything — and read them back.",
+    "Share something you made, did, or figured out with someone who would genuinely appreciate it.",
+    "Ask someone you respect for honest feedback on something you've been working on.",
+    "Write yourself a short letter acknowledging something hard you've been doing or going through.",
+    "Tell someone what you specifically contributed to something you worked on together — not boasting, just owning it.",
+  ],
+  learning: [
+    "Read for thirty minutes in an actual book — not articles, not a phone — something you've been meaning to get to.",
+    "Watch or listen to a lecture, documentary, or long-form piece on something you know nothing about.",
+    "Pick one thing you've been curious about and spend thirty minutes going deep on it.",
+    "Visit somewhere new in your city with no goal except to observe.",
+    "Write down five questions you genuinely don't know the answer to and pick one to start chasing.",
+  ],
+  mastery: [
+    "Spend thirty minutes working on a skill you're actively building — deliberate practice, not just doing the thing.",
+    "Return to a project you've been avoiding and spend twenty minutes making it better.",
+    "Identify one thing you keep doing inefficiently and spend thirty minutes figuring out a better way.",
+    "Teach something you know to someone else — even briefly — and notice what gaps it reveals.",
+    "Set a small, specific, completable goal for today in an area you want to get better at, and finish it before you stop.",
+  ],
+  purpose: [
+    "Spend thirty minutes working on something you believe matters, even if no one is asking you to.",
+    "Write for twenty minutes about what you'd like to have contributed or built five years from now.",
+    "Find one concrete way to help someone today — something that actually requires something of you.",
+    "Identify a project or cause you care about and take one real step toward it today.",
+    "Volunteer your time for something in the next two weeks — find it, sign up, put it in your calendar.",
+  ],
+  play: [
+    "Do something purely for fun with no productive justification — a game, something silly, goofing around — for at least thirty minutes.",
+    "Find something that made you laugh recently and spend twenty minutes following that thread.",
+    "Play a game with someone: a board game, a video game, a card game — something with rules and no stakes.",
+    "Do something physically playful: throw something, kick something, dance badly in your kitchen.",
+    "Revisit something you loved as a kid — a game, a show, a book, an activity — without irony.",
+  ],
+  creativity: [
+    "Make something with your hands for thirty minutes — draw, write, cook, build, play an instrument, anything that produces an artifact.",
+    "Start something you have no plan for and see where it goes for twenty minutes — no goal, just making.",
+    "Pick up a creative project you've been ignoring and spend thirty minutes moving it forward.",
+    "Write a short piece — a paragraph, a poem, a scene — about something you're thinking about.",
+    "Listen to an album start to finish while doing nothing else, and notice what it makes you feel or imagine.",
+  ],
+  hope: [
+    "Write down something specific you're looking forward to, then spend twenty minutes making it more real — book it, plan it, tell someone.",
+    "Make a list of ten things you want to do or experience in the next year, however small or large.",
+    "Spend thirty minutes planning a trip, project, or event you'd genuinely love — even if it's not certain yet.",
+    "Write a letter to yourself to open in six months, describing what you hope will be different.",
+    "Identify one goal that still genuinely excites you and take the first concrete step toward it today.",
+  ],
+};
+
 const CONFIRMATIONS = ["good.","that counts.","that's enough.","you moved.","okay.","done.","that's real."];
 
 const SUMMARY_MSGS = (neglected, thriving) => {
@@ -109,6 +196,21 @@ function getWeightedAction(tier, neglectedIds, excludeText = null) {
     for (let i = 0; i < weight; i++) weighted.push(a);
   });
   return weighted[Math.floor(Math.random() * weighted.length)];
+}
+
+function getRandomAction(arr, excludeText = null) {
+  const filtered = excludeText ? arr.filter(s => s !== excludeText) : arr;
+  if (!filtered.length) return arr[0];
+  return filtered[Math.floor(Math.random() * filtered.length)];
+}
+
+function getChangeIndicator(areaId, currentRatings, previousRatings) {
+  if (!previousRatings) return null;
+  const cur = currentRatings[areaId];
+  const prev = previousRatings[areaId];
+  if (!cur || !prev || cur === prev) return null;
+  const rank = { neglected: 0, okay: 1, thriving: 2 };
+  return rank[cur] > rank[prev] ? "↑" : "↓";
 }
 
 function formatDate(ts) {
@@ -333,6 +435,57 @@ function SoftResetScreen({ onBack, neglectedIds }) {
   );
 }
 
+function TendToScreen({ areaId, onBack, onDone }) {
+  const area = AREAS.find(a => a.id === areaId);
+  const actions = AREA_ACTIONS[areaId] || [];
+  const initial = getRandomAction(actions);
+
+  const [phase, setPhase] = useState("action");
+  const [action, setAction] = useState(initial);
+  const [visible, setVisible] = useState(true);
+  const lastText = useRef(initial);
+
+  const show = (fn) => {
+    setVisible(false);
+    setTimeout(() => { fn(); setVisible(true); }, 220);
+  };
+
+  const commit = () => show(() => setPhase("confirmed"));
+  const somethingElse = () => {
+    const next = getRandomAction(actions, lastText.current);
+    lastText.current = next;
+    show(() => setAction(next));
+  };
+
+  return (
+    <div className="screen tendto-screen">
+      <button className="back-btn" onClick={onBack}>← back</button>
+      <div className="tendto-area-label">
+        <span className="tendto-category">{area?.category}</span>
+        <span className="tendto-name">{area?.name}</span>
+      </div>
+      <div className={`tendto-center ${visible ? "vis" : ""}`}>
+        {phase === "action" && (
+          <>
+            <p className="tendto-action">{action}</p>
+            <div className="tendto-btns">
+              <button className="abtn abtn-done" onClick={commit}>i'll do this</button>
+              <button className="abtn abtn-skip" onClick={somethingElse}>something else</button>
+            </div>
+            <button className="text-btn" onClick={onBack}>not now</button>
+          </>
+        )}
+        {phase === "confirmed" && (
+          <>
+            <p className="tendto-confirmation">set. come back when you're done.</p>
+            <button className="abtn abtn-done tendto-done-btn" onClick={onDone}>done</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function CheckinScreen({ onBack, onComplete }) {
   const [index, setIndex] = useState(0);
   const [ratings, setRatings] = useState({});
@@ -374,7 +527,7 @@ function CheckinScreen({ onBack, onComplete }) {
   );
 }
 
-function SummaryScreen({ ratings, onDone, onRetake, onSoftReset }) {
+function SummaryScreen({ ratings, previousRatings, onDone, onRetake, onSoftReset, onTendTo }) {
   const neglected = AREAS.filter(a => ratings[a.id] === "neglected");
   const thriving  = AREAS.filter(a => ratings[a.id] === "thriving");
   const msg = SUMMARY_MSGS(neglected, thriving);
@@ -391,21 +544,40 @@ function SummaryScreen({ ratings, onDone, onRetake, onSoftReset }) {
           return (
             <div className="sum-cat" key={cat}>
               <p className="sum-cat-label">{cat}</p>
-              {areas.map(a => (
-                <div className="sum-row" key={a.id}>
-                  <span className="sum-name">{a.name}</span>
-                  {ratings[a.id]
-                    ? <span className={`sum-state s-${ratings[a.id]}`}>{ratings[a.id]}</span>
-                    : <span className="sum-state s-skip">—</span>}
-                </div>
-              ))}
+              {areas.map(a => {
+                const indicator = getChangeIndicator(a.id, ratings, previousRatings);
+                const state = ratings[a.id];
+                const isNeglected = state === "neglected";
+                const rightSide = (
+                  <span className="sum-row-right">
+                    {state
+                      ? <span className={`sum-state s-${state}`}>{state}</span>
+                      : <span className="sum-state s-skip">—</span>}
+                    {indicator && (
+                      <span className={`sum-change sum-change-${indicator === "↑" ? "up" : "down"}`}>{indicator}</span>
+                    )}
+                    {isNeglected && <span className="sum-row-arrow">→</span>}
+                  </span>
+                );
+                return isNeglected ? (
+                  <button key={a.id} className="sum-row sum-row-tap" onClick={() => onTendTo(a.id)}>
+                    <span className="sum-name">{a.name}</span>
+                    {rightSide}
+                  </button>
+                ) : (
+                  <div key={a.id} className="sum-row">
+                    <span className="sum-name">{a.name}</span>
+                    {rightSide}
+                  </div>
+                );
+              })}
             </div>
           );
         })}
         {neglected.length > 0 && (
           <div className="sum-bridge">
             <button className="sum-bridge-btn" onClick={onSoftReset}>
-              take one small action →
+              or take one small action →
             </button>
           </div>
         )}
@@ -548,6 +720,7 @@ export default function App() {
   const [screen, setScreen] = useState("home");
   const [history, setHistory] = useState([]);
   const [pendingRatings, setPendingRatings] = useState(null);
+  const [tendToAreaId, setTendToAreaId] = useState(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -556,6 +729,7 @@ export default function App() {
 
   const neglectedIds = getNeglectedFromHistory(history);
   const trends = getTrends(history);
+  const previousRatings = history[1]?.ratings ?? null;
 
   const handleCheckinComplete = async (ratings) => {
     setPendingRatings(ratings);
@@ -679,6 +853,30 @@ export default function App() {
         .sum-bridge-btn:hover { color: #c8b89a; }
         .sum-actions { display: flex; gap: 12px; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid #222220; }
 
+        /* TEND TO */
+        .tendto-screen { justify-content: flex-start; padding: 0; position: relative; }
+        .tendto-area-label { display: flex; flex-direction: column; align-items: center; padding: 3.5rem 2rem 0; gap: 4px; }
+        .tendto-category { font-size: 9px; letter-spacing: 0.2em; color: #7a7a72; text-transform: uppercase; }
+        .tendto-name { font-family: 'Instrument Serif', serif; font-size: clamp(22px,4.5vw,30px); color: #c8bfb0; }
+        .tendto-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 2rem 4rem; width: 100%; max-width: 480px; margin: 0 auto; opacity: 0; transform: translateY(6px); transition: opacity 0.25s ease, transform 0.25s ease; }
+        .tendto-center.vis { opacity: 1; transform: translateY(0); }
+        .tendto-action { font-family: 'Instrument Serif', serif; font-size: clamp(18px,3.5vw,24px); color: #e8e3db; text-align: center; line-height: 1.6; margin-bottom: 2.5rem; }
+        .tendto-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 240px; margin-bottom: 1.25rem; }
+        .tendto-confirmation { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(20px,4vw,28px); color: #9a9a90; text-align: center; line-height: 1.5; margin-bottom: 2rem; }
+        .tendto-done-btn { width: 100%; max-width: 240px; }
+
+        /* SUMMARY — tappable neglected rows + progress indicators */
+        .sum-row-tap { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #1e1e1c; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; text-align: left; transition: background 0.15s; }
+        .sum-row-tap:last-child { border-bottom: none; }
+        .sum-row-tap:hover { background: #13100f; }
+        .sum-row-tap:hover .sum-name { color: #c8b8b0; }
+        .sum-row-tap:hover .sum-row-arrow { opacity: 1; }
+        .sum-row-right { display: flex; align-items: center; gap: 6px; }
+        .sum-row-arrow { font-size: 10px; color: #8a6a5a; opacity: 0.4; transition: opacity 0.15s; }
+        .sum-change { font-size: 10px; font-family: 'Geist Mono', monospace; font-weight: 300; }
+        .sum-change-up   { color: #7aaa6a; }
+        .sum-change-down { color: #c07060; }
+
         /* STATS */
         .stats-screen { justify-content: flex-start; padding: 0; }
         .stats-inner { width: 100%; max-width: 560px; padding: 2rem; margin: 0 auto; }
@@ -746,10 +944,18 @@ export default function App() {
         {screen === "summary" && (
           <SummaryScreen
             ratings={pendingRatings}
-            history={history}
+            previousRatings={previousRatings}
             onDone={() => setScreen("home")}
             onRetake={() => { setPendingRatings(null); setScreen("checkin"); }}
             onSoftReset={() => setScreen("reset")}
+            onTendTo={(areaId) => { setTendToAreaId(areaId); setScreen("tendto"); }}
+          />
+        )}
+        {screen === "tendto" && (
+          <TendToScreen
+            areaId={tendToAreaId}
+            onBack={() => setScreen("summary")}
+            onDone={() => setScreen("home")}
           />
         )}
         {screen === "stats" && (
