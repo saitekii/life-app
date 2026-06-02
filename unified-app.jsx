@@ -21,40 +21,63 @@ const CATEGORY_ORDER = ["Foundations","Connection","Growth","Meaning","Joy & Vit
 
 const ACTIONS = {
   1: [
-    { text: "stand up",              domains: ["physical"] },
-    { text: "sit somewhere else",    domains: ["physical","stability"] },
-    { text: "open a window",         domains: ["physical","play"] },
-    { text: "change the lighting",   domains: ["physical","creativity"] },
-    { text: "step outside",          domains: ["physical","hope"] },
-    { text: "move to another room",  domains: ["physical","stability"] },
-    { text: "sit by a window",       domains: ["physical","learning"] },
+    { text: "stand up",                           domains: ["physical"] },
+    { text: "sit somewhere else",                 domains: ["physical","stability"] },
+    { text: "open a window",                      domains: ["physical","play"] },
+    { text: "change the lighting",                domains: ["physical","creativity"] },
+    { text: "step outside",                       domains: ["physical","hope"] },
+    { text: "move to another room",               domains: ["physical","stability"] },
+    { text: "sit by a window",                    domains: ["physical","learning"] },
+    { text: "lie down flat for a moment",         domains: ["physical"] },
+    { text: "put your phone in another room",     domains: ["autonomy","stability"] },
+    { text: "look at something far away",         domains: ["physical","learning"] },
+    { text: "notice how your body feels right now", domains: ["physical","autonomy"] },
   ],
   2: [
-    { text: "drink some water",                  domains: ["physical"] },
-    { text: "stretch your arms overhead",        domains: ["physical","mastery"] },
-    { text: "wash your face",                    domains: ["physical","stability"] },
-    { text: "put your shoes on",                 domains: ["physical","hope"] },
-    { text: "breathe slowly for ten seconds",    domains: ["physical","autonomy"] },
-    { text: "roll your shoulders back",          domains: ["physical","mastery"] },
-    { text: "put something warm in your hands",  domains: ["physical","intimacy"] },
+    { text: "drink some water",                          domains: ["physical"] },
+    { text: "stretch your arms overhead",                domains: ["physical","mastery"] },
+    { text: "wash your face",                            domains: ["physical","stability"] },
+    { text: "put your shoes on",                         domains: ["physical","hope"] },
+    { text: "breathe slowly for ten seconds",            domains: ["physical","autonomy"] },
+    { text: "roll your shoulders back",                  domains: ["physical","mastery"] },
+    { text: "put something warm in your hands",          domains: ["physical","intimacy"] },
+    { text: "text someone you haven't talked to in a while", domains: ["relationships","intimacy"] },
+    { text: "eat something small",                       domains: ["physical"] },
+    { text: "name one thing you did right today",        domains: ["recognition","autonomy"] },
+    { text: "say something kind to yourself, out loud",  domains: ["recognition","intimacy"] },
+    { text: "close your eyes for thirty seconds",        domains: ["physical","autonomy"] },
   ],
   3: [
-    { text: "send one message to someone",              domains: ["relationships","intimacy"] },
-    { text: "open something you've been meaning to read", domains: ["learning"] },
-    { text: "put your phone face down",                 domains: ["autonomy","stability"] },
-    { text: "write one sentence",                       domains: ["creativity","mastery"] },
-    { text: "look out a window for a moment",           domains: ["learning","hope"] },
-    { text: "pick up something you've left unfinished", domains: ["mastery","purpose"] },
-    { text: "play one song you love",                   domains: ["play","creativity","hope"] },
-    { text: "do one small thing for future you",        domains: ["hope","purpose","stability"] },
+    { text: "send one message to someone",                  domains: ["relationships","intimacy"] },
+    { text: "open something you've been meaning to read",   domains: ["learning"] },
+    { text: "put your phone face down",                     domains: ["autonomy","stability"] },
+    { text: "write one sentence",                           domains: ["creativity","mastery"] },
+    { text: "look out a window for a moment",               domains: ["learning","hope"] },
+    { text: "pick up something you've left unfinished",     domains: ["mastery","purpose"] },
+    { text: "play one song you love",                       domains: ["play","creativity","hope"] },
+    { text: "do one small thing for future you",            domains: ["hope","purpose","stability"] },
+    { text: "send a voice note instead of typing",          domains: ["relationships","intimacy"] },
+    { text: "notice one thing you made or did this week",   domains: ["recognition","mastery"] },
+    { text: "find a video of something you love",           domains: ["play","learning"] },
+    { text: "write down one thing you want to remember",    domains: ["hope","learning"] },
+    { text: "open a project you care about, just to look",  domains: ["purpose","creativity"] },
+    { text: "tell someone one thing you appreciate about them", domains: ["relationships","recognition"] },
+    { text: "put on music that matches how you feel",       domains: ["creativity","intimacy"] },
+    { text: "pull up something creative you made",          domains: ["recognition","creativity"] },
+    { text: "let yourself want something without guilt",    domains: ["autonomy","hope"] },
+    { text: "cancel something you don't actually want to do", domains: ["autonomy","stability"] },
+    { text: "make a small plan for tomorrow",               domains: ["hope","stability"] },
   ],
   4: [
-    { text: "sit still for a moment",        domains: ["physical","autonomy"] },
-    { text: "notice three things in the room",domains: ["learning","physical"] },
-    { text: "feel your feet on the ground",  domains: ["physical","stability"] },
-    { text: "take one breath",               domains: ["physical","autonomy"] },
-    { text: "let your shoulders drop",       domains: ["physical","stability"] },
-    { text: "just be here",                  domains: ["autonomy","purpose"] },
+    { text: "sit still for a moment",             domains: ["physical","autonomy"] },
+    { text: "notice three things in the room",    domains: ["learning","physical"] },
+    { text: "feel your feet on the ground",       domains: ["physical","stability"] },
+    { text: "take one breath",                    domains: ["physical","autonomy"] },
+    { text: "let your shoulders drop",            domains: ["physical","stability"] },
+    { text: "just be here",                       domains: ["autonomy","purpose"] },
+    { text: "let your jaw unclench",              domains: ["physical","autonomy"] },
+    { text: "close one open tab or app",          domains: ["stability","autonomy"] },
+    { text: "give yourself credit for being here", domains: ["recognition","autonomy"] },
   ],
 };
 
@@ -205,6 +228,19 @@ function HomeScreen({ onSoftReset, onCheckin, onStats, history, trends }) {
         </button>
       </div>
 
+      {history.length === 0 && (
+        <div className="onboarding">
+          <p className="onboarding-line">
+            <span className="onboarding-label">soft reset</span>
+            gives you one small action when you're stuck, overwhelmed, or just need to move.
+          </p>
+          <p className="onboarding-line">
+            <span className="onboarding-label">life areas</span>
+            walks you through twelve parts of life, one at a time, so you can see what's actually going on.
+          </p>
+        </div>
+      )}
+
       {history.length > 0 && (
         <button className="stats-link" onClick={onStats}>
           view history & patterns →
@@ -338,7 +374,7 @@ function CheckinScreen({ onBack, onComplete }) {
   );
 }
 
-function SummaryScreen({ ratings, onDone, onRetake }) {
+function SummaryScreen({ ratings, onDone, onRetake, onSoftReset }) {
   const neglected = AREAS.filter(a => ratings[a.id] === "neglected");
   const thriving  = AREAS.filter(a => ratings[a.id] === "thriving");
   const msg = SUMMARY_MSGS(neglected, thriving);
@@ -366,6 +402,13 @@ function SummaryScreen({ ratings, onDone, onRetake }) {
             </div>
           );
         })}
+        {neglected.length > 0 && (
+          <div className="sum-bridge">
+            <button className="sum-bridge-btn" onClick={onSoftReset}>
+              take one small action →
+            </button>
+          </div>
+        )}
         <div className="sum-actions">
           <button className="abtn abtn-done" onClick={onRetake}>check in again</button>
           <button className="abtn abtn-skip" onClick={onDone}>done</button>
@@ -568,6 +611,10 @@ export default function App() {
         .trend-state.neglected { color: #7a5a4e; }
         .trend-state.thriving  { color: #5a7a52; }
 
+        .onboarding { width: 100%; max-width: 480px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.9rem; }
+        .onboarding-line { font-size: 10px; color: #3a3a36; letter-spacing: 0.04em; line-height: 1.8; }
+        .onboarding-label { color: #5a5a52; margin-right: 0.5em; }
+
         /* SOFT RESET */
         .reset-screen { justify-content: center; padding: 2rem; position: relative; }
         .back-btn { position: absolute; top: 1.5rem; left: 1.75rem; font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: #3a3a36; background: none; border: none; cursor: pointer; padding: 4px 0; transition: color 0.2s; font-weight: 300; }
@@ -627,6 +674,9 @@ export default function App() {
         .s-okay      { color: #5a5a52; }
         .s-neglected { color: #8a5a48; }
         .s-skip      { color: #2e2e2c; }
+        .sum-bridge { padding: 2rem 0 0; }
+        .sum-bridge-btn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.12em; color: #4a4a46; background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; }
+        .sum-bridge-btn:hover { color: #8a7a6a; }
         .sum-actions { display: flex; gap: 12px; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid #1a1a18; }
 
         /* STATS */
@@ -699,6 +749,7 @@ export default function App() {
             history={history}
             onDone={() => setScreen("home")}
             onRetake={() => { setPendingRatings(null); setScreen("checkin"); }}
+            onSoftReset={() => setScreen("reset")}
           />
         )}
         {screen === "stats" && (
