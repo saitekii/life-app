@@ -109,8 +109,8 @@ function getGreeting() {
 
 async function loadHistory() {
   try {
-    const r = await window.storage.get("checkin-history");
-    return r ? JSON.parse(r.value) : [];
+    const raw = localStorage.getItem("checkin-history");
+    return raw ? JSON.parse(raw) : [];
   } catch { return []; }
 }
 
@@ -119,7 +119,7 @@ async function saveCheckin(entry) {
     const hist = await loadHistory();
     hist.unshift(entry);
     const trimmed = hist.slice(0, 60);
-    await window.storage.set("checkin-history", JSON.stringify(trimmed));
+    localStorage.setItem("checkin-history", JSON.stringify(trimmed));
     return trimmed;
   } catch { return []; }
 }
