@@ -216,8 +216,10 @@ function getTimeOfDayDomains() {
   return ["autonomy", "play", "physical"];
 }
 
-function getWeightedAction(tier, neglectedIds, excludeText = null) {
-  const pool = ACTIONS[tier] || ACTIONS[4];
+function getWeightedAction(tier, neglectedIds, excludeText = null, customActions = []) {
+  const basePool = ACTIONS[tier] || ACTIONS[4];
+  const customPool = tier <= 3 ? customActions.map(a => ({ text: a.text, domains: [] })) : [];
+  const pool = [...basePool, ...customPool];
   const filtered = excludeText ? pool.filter(a => a.text !== excludeText) : pool;
   const timeDomains = getTimeOfDayDomains();
   const weighted = [];
@@ -283,6 +285,19 @@ async function saveCheckin(entry) {
   } catch { return []; }
 }
 
+function loadCustomActions() {
+  try {
+    const raw = localStorage.getItem("custom-actions");
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveCustomActions(actions) {
+  try {
+    localStorage.setItem("custom-actions", JSON.stringify(actions));
+  } catch {}
+}
+
 function getNeglectedFromHistory(history) {
   if (!history.length) return [];
   const recent = history.slice(0, 3);
@@ -340,7 +355,7 @@ function dominantState(stats) {
 
 // ─── SCREENS ─────────────────────────────────────────────────────────────────
 
-function HomeScreen({ onSoftReset, onCheckin, onStats, history, trends, isDark, onToggleTheme }) {
+function HomeScreen({ onSoftReset, onCheckin, onStats, onMyActions, history, trends, isDark, onToggleTheme }) {
   const lastCheckin = history[0];
   return (
     <div className="screen home-screen">
@@ -366,6 +381,10 @@ function HomeScreen({ onSoftReset, onCheckin, onStats, history, trends, isDark, 
           <span className="door-sub">see how everything<br/>is actually going</span>
         </button>
       </div>
+
+      <button className="stats-link" onClick={onMyActions}>
+        my soft reset actions →
+      </button>
 
       {history.length === 0 && (
         <div className="onboarding">
@@ -409,7 +428,7 @@ function HomeScreen({ onSoftReset, onCheckin, onStats, history, trends, isDark, 
   );
 }
 
-function SoftResetScreen({ onBack, neglectedIds }) {
+function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
   const [phase, setPhase] = useState("idle");
   const [tier, setTier] = useState(1);
   const [action, setAction] = useState(null);
@@ -426,7 +445,7 @@ function SoftResetScreen({ onBack, neglectedIds }) {
   };
 
   const start = () => {
-    const a = getWeightedAction(1, neglectedIds);
+    const a = getWeightedAction(1, neglectedIds, null, customActions);
     lastText.current = a.text;
     show(() => { setTier(1); setAction(a); setPhase("action"); });
   };
@@ -446,7 +465,7 @@ function SoftResetScreen({ onBack, neglectedIds }) {
   };
   const notThis = () => {
     const next = Math.min(tier + 1, 4);
-    const a = getWeightedAction(next, neglectedIds, lastText.current);
+    const a = getWeightedAction(next, neglectedIds, lastText.current, customActions);
     lastText.current = a.text;
     show(() => { setTier(next); setAction(a); });
   };
@@ -783,12 +802,61 @@ function StatsScreen({ onBack, history, onTendTo }) {
 
 // ─── APP ─────────────────────────────────────────────────────────────────────
 
+function MyActionsScreen({ onBack, customActions, onAdd, onDelete }) {
+  const [text, setText] = useState("");
+
+  const handleAdd = () => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    onAdd(trimmed);
+    setText("");
+  };
+
+  return (
+    <div className="screen myactions-screen">
+      <div className="myactions-inner">
+        <div className="stats-header">
+          <button className="back-btn-inline" onClick={onBack}>← back</button>
+          <h2 className="stats-title">my actions</h2>
+          <p className="stats-sub">added to your soft reset suggestions</p>
+        </div>
+        <div className="myactions-add">
+          <input
+            className="myactions-input"
+            type="text"
+            placeholder="type an action..."
+            value={text}
+            maxLength={80}
+            onChange={e => setText(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleAdd()}
+          />
+          <button className="myactions-add-btn" onClick={handleAdd} disabled={!text.trim()}>
+            add
+          </button>
+        </div>
+        {customActions.length === 0 && (
+          <p className="empty-state">no custom actions yet. they'll mix into soft reset once added.</p>
+        )}
+        <div className="myactions-list">
+          {customActions.map(a => (
+            <div key={a.id} className="myactions-row">
+              <span className="myactions-text">{a.text}</span>
+              <button className="myactions-delete" onClick={() => onDelete(a.id)} aria-label="delete">×</button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState("home");
   const [history, setHistory] = useState([]);
   const [pendingRatings, setPendingRatings] = useState(null);
   const [tendToAreaId, setTendToAreaId] = useState(null);
   const [tendToOrigin, setTendToOrigin] = useState("summary");
+  const [customActions, setCustomActions] = useState([]);
   const [loaded, setLoaded] = useState(false);
   const [isDark, setIsDark] = useState(
     !document.documentElement.classList.contains("theme-light")
@@ -804,7 +872,20 @@ export default function App() {
 
   useEffect(() => {
     loadHistory().then(h => { setHistory(h); setLoaded(true); });
+    setCustomActions(loadCustomActions());
   }, []);
+
+  const handleAddCustomAction = (text) => {
+    const updated = [...customActions, { id: Date.now(), text }];
+    setCustomActions(updated);
+    saveCustomActions(updated);
+  };
+
+  const handleDeleteCustomAction = (id) => {
+    const updated = customActions.filter(a => a.id !== id);
+    setCustomActions(updated);
+    saveCustomActions(updated);
+  };
 
   const neglectedIds = getNeglectedFromHistory(history);
   const trends = getTrends(history);
@@ -1148,6 +1229,23 @@ export default function App() {
         .detail-row:last-child { border-bottom: none; }
         .detail-name { font-size: 11px; color: var(--color-text-ui); letter-spacing: 0.03em; }
         .detail-state { font-size: 10px; letter-spacing: 0.08em; }
+
+        /* MY ACTIONS */
+        .myactions-screen { justify-content: flex-start; padding: 0; }
+        .myactions-inner { width: 100%; max-width: 560px; padding: 2rem; margin: 0 auto; }
+        .myactions-add { display: flex; gap: 8px; margin-bottom: 2rem; }
+        .myactions-input { flex: 1; font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 300; letter-spacing: 0.04em; background: none; border: 1px solid var(--color-border-strong); border-radius: 2px; padding: 11px 14px; color: var(--color-text-primary); outline: none; }
+        .myactions-input::placeholder { color: var(--color-text-faint); }
+        .myactions-input:focus { border-color: var(--color-text-ui); }
+        .myactions-add-btn { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 300; letter-spacing: 0.1em; padding: 11px 18px; background: none; border: 1px solid var(--color-border-strong); border-radius: 2px; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+        .myactions-add-btn:hover:not(:disabled) { border-color: var(--color-text-ui); color: var(--color-text-primary); background: var(--color-bg-raised); }
+        .myactions-add-btn:disabled { opacity: 0.35; cursor: default; }
+        .myactions-list { display: flex; flex-direction: column; }
+        .myactions-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-border-row); }
+        .myactions-row:last-child { border-bottom: none; }
+        .myactions-text { font-size: 11px; color: var(--color-text-body); letter-spacing: 0.03em; line-height: 1.5; flex: 1; padding-right: 1rem; }
+        .myactions-delete { font-size: 18px; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 4px 8px; transition: color 0.15s; line-height: 1; }
+        .myactions-delete:hover { color: var(--color-state-neglected); }
       `}</style>
 
       <div className="app">
@@ -1156,6 +1254,7 @@ export default function App() {
             onSoftReset={() => setScreen("reset")}
             onCheckin={() => setScreen("checkin")}
             onStats={() => setScreen("stats")}
+            onMyActions={() => setScreen("myactions")}
             history={history}
             trends={trends}
             isDark={isDark}
@@ -1163,7 +1262,7 @@ export default function App() {
           />
         )}
         {screen === "reset" && (
-          <SoftResetScreen onBack={() => setScreen("home")} neglectedIds={neglectedIds} />
+          <SoftResetScreen onBack={() => setScreen("home")} neglectedIds={neglectedIds} customActions={customActions} />
         )}
         {screen === "checkin" && (
           <CheckinScreen onBack={() => setScreen("home")} onComplete={handleCheckinComplete} />
@@ -1190,6 +1289,14 @@ export default function App() {
             onBack={() => setScreen("home")}
             history={history}
             onTendTo={(areaId) => { setTendToAreaId(areaId); setTendToOrigin("stats"); setScreen("tendto"); }}
+          />
+        )}
+        {screen === "myactions" && (
+          <MyActionsScreen
+            onBack={() => setScreen("home")}
+            customActions={customActions}
+            onAdd={handleAddCustomAction}
+            onDelete={handleDeleteCustomAction}
           />
         )}
       </div>
