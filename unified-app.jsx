@@ -218,7 +218,9 @@ function getTimeOfDayDomains() {
 
 function getWeightedAction(tier, neglectedIds, excludeText = null, customActions = []) {
   const basePool = ACTIONS[tier] || ACTIONS[4];
-  const customPool = tier <= 3 ? customActions.map(a => ({ text: a.text, domains: [] })) : [];
+  const customPool = customActions
+    .filter(a => (a.tier ?? 3) === tier)
+    .map(a => ({ text: a.text, domains: a.domains || [] }));
   const pool = [...basePool, ...customPool];
   const filtered = excludeText ? pool.filter(a => a.text !== excludeText) : pool;
   const timeDomains = getTimeOfDayDomains();
@@ -802,14 +804,33 @@ function StatsScreen({ onBack, history, onTendTo }) {
 
 // ─── APP ─────────────────────────────────────────────────────────────────────
 
-function MyActionsScreen({ onBack, customActions, onAdd, onDelete }) {
+function MyActionsScreen({ onBack, customActions, onAdd, onDelete, onImport }) {
   const [text, setText] = useState("");
+  const [showImport, setShowImport] = useState(false);
+  const [importText, setImportText] = useState("");
+  const [feedback, setFeedback] = useState(null);
 
   const handleAdd = () => {
     const trimmed = text.trim();
     if (!trimmed) return;
     onAdd(trimmed);
     setText("");
+  };
+
+  const handleImport = () => {
+    try {
+      const parsed = JSON.parse(importText.trim());
+      if (!Array.isArray(parsed)) throw new Error("expected a JSON array");
+      const valid = parsed.filter(a => a && typeof a.text === "string" && a.text.trim());
+      if (!valid.length) throw new Error("no valid actions found");
+      onImport(valid);
+      setImportText("");
+      setShowImport(false);
+      setFeedback({ ok: true, msg: `imported ${valid.length} action${valid.length !== 1 ? "s" : ""}` });
+      setTimeout(() => setFeedback(null), 4000);
+    } catch (e) {
+      setFeedback({ ok: false, msg: e.message || "invalid JSON" });
+    }
   };
 
   return (
@@ -834,7 +855,44 @@ function MyActionsScreen({ onBack, customActions, onAdd, onDelete }) {
             add
           </button>
         </div>
-        {customActions.length === 0 && (
+
+        <div className="import-section">
+          <div className="import-row">
+            <button
+              className="import-toggle"
+              onClick={() => { setShowImport(v => !v); setFeedback(null); }}
+            >
+              {showImport ? "cancel" : "import JSON"}
+            </button>
+            {feedback && (
+              <span className={`import-feedback ${feedback.ok ? "import-ok" : "import-err"}`}>
+                {feedback.msg}
+              </span>
+            )}
+          </div>
+          {showImport && (
+            <div className="import-body">
+              <p className="import-hint">array of objects with text, tier (1–4), and domains</p>
+              <textarea
+                className="import-textarea"
+                value={importText}
+                onChange={e => { setImportText(e.target.value); setFeedback(null); }}
+                placeholder={'[{"text": "pick up the guitar", "tier": 2, "domains": ["creativity", "play"]}]'}
+                rows={7}
+                spellCheck={false}
+              />
+              <button
+                className="myactions-add-btn"
+                onClick={handleImport}
+                disabled={!importText.trim()}
+              >
+                import
+              </button>
+            </div>
+          )}
+        </div>
+
+        {customActions.length === 0 && !showImport && (
           <p className="empty-state">no custom actions yet. they'll mix into soft reset once added.</p>
         )}
         <div className="myactions-list">
@@ -876,7 +934,19 @@ export default function App() {
   }, []);
 
   const handleAddCustomAction = (text) => {
-    const updated = [...customActions, { id: Date.now(), text }];
+    const updated = [...customActions, { id: Date.now(), text, tier: 3, domains: [] }];
+    setCustomActions(updated);
+    saveCustomActions(updated);
+  };
+
+  const handleImportCustomActions = (items) => {
+    const newItems = items.map(a => ({
+      id: Date.now() + Math.random(),
+      text: String(a.text).trim(),
+      tier: Number.isInteger(a.tier) && a.tier >= 1 && a.tier <= 4 ? a.tier : 3,
+      domains: Array.isArray(a.domains) ? a.domains : [],
+    }));
+    const updated = [...customActions, ...newItems];
     setCustomActions(updated);
     saveCustomActions(updated);
   };
@@ -1246,6 +1316,18 @@ export default function App() {
         .myactions-text { font-size: 11px; color: var(--color-text-body); letter-spacing: 0.03em; line-height: 1.5; flex: 1; padding-right: 1rem; }
         .myactions-delete { font-size: 18px; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 4px 8px; transition: color 0.15s; line-height: 1; }
         .myactions-delete:hover { color: var(--color-state-neglected); }
+        .import-section { margin-bottom: 2rem; }
+        .import-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+        .import-toggle { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; }
+        .import-toggle:hover { color: var(--color-text-secondary); }
+        .import-feedback { font-size: 10px; letter-spacing: 0.06em; }
+        .import-ok { color: var(--color-state-thriving); }
+        .import-err { color: var(--color-state-neglected); }
+        .import-body { display: flex; flex-direction: column; gap: 10px; }
+        .import-hint { font-size: 10px; color: var(--color-text-faint); letter-spacing: 0.04em; line-height: 1.6; }
+        .import-textarea { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.02em; background: none; border: 1px solid var(--color-border-strong); border-radius: 2px; padding: 12px 14px; color: var(--color-text-secondary); outline: none; resize: vertical; line-height: 1.6; width: 100%; box-sizing: border-box; }
+        .import-textarea::placeholder { color: var(--color-text-faint); }
+        .import-textarea:focus { border-color: var(--color-text-ui); }
       `}</style>
 
       <div className="app">
@@ -1296,6 +1378,7 @@ export default function App() {
             onBack={() => setScreen("home")}
             customActions={customActions}
             onAdd={handleAddCustomAction}
+            onImport={handleImportCustomActions}
             onDelete={handleDeleteCustomAction}
           />
         )}
