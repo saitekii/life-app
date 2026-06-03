@@ -593,7 +593,7 @@ function SummaryScreen({ ratings, previousRatings, onDone, onRetake, onSoftReset
   );
 }
 
-function StatsScreen({ onBack, history }) {
+function StatsScreen({ onBack, history, onTendTo }) {
   const [expanded, setExpanded] = useState(null);
   const areaMap = getAreaMap(history);
 
@@ -616,12 +616,12 @@ function StatsScreen({ onBack, history }) {
           <p className="section-caption">based on all your check-ins combined</p>
           <div className="area-map">
             {AREAS.map(a => (
-              <div key={a.id} className={cellClass(a.id)}>
+              <button key={a.id} className={cellClass(a.id)} onClick={() => onTendTo(a.id)}>
                 <span className="map-cell-name">{a.name}</span>
                 {areaMap[a.id].total > 0 && (
                   <span className="map-cell-state">{dominantState(areaMap[a.id])}</span>
                 )}
-              </div>
+              </button>
             ))}
           </div>
           <div className="map-legend">
@@ -695,6 +695,7 @@ export default function App() {
   const [history, setHistory] = useState([]);
   const [pendingRatings, setPendingRatings] = useState(null);
   const [tendToAreaId, setTendToAreaId] = useState(null);
+  const [tendToOrigin, setTendToOrigin] = useState("summary");
   const [loaded, setLoaded] = useState(false);
   const [isDark, setIsDark] = useState(
     !document.documentElement.classList.contains("theme-light")
@@ -1002,7 +1003,8 @@ export default function App() {
 
         .map-section { margin-bottom: 3rem; }
         .area-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-bottom: 1rem; }
-        .map-cell { padding: 10px 12px; border-radius: 3px; display: flex; flex-direction: column; gap: 3px; }
+        .map-cell { padding: 10px 12px; border-radius: 3px; display: flex; flex-direction: column; gap: 3px; cursor: pointer; text-align: left; transition: opacity 0.15s; }
+        .map-cell:hover { opacity: 0.75; }
         .map-cell-thriving  { background: var(--color-cell-thriving-bg);  border: 1px solid var(--color-cell-thriving-border);  color: var(--color-cell-thriving-text); }
         .map-cell-neglected { background: var(--color-cell-neglected-bg); border: 1px solid var(--color-cell-neglected-border); color: var(--color-cell-neglected-text); }
         .map-cell-okay      { background: var(--color-cell-okay-bg);      border: 1px solid var(--color-cell-okay-border);      color: var(--color-cell-okay-text); }
@@ -1067,18 +1069,22 @@ export default function App() {
             onDone={() => setScreen("home")}
             onRetake={() => { setPendingRatings(null); setScreen("checkin"); }}
             onSoftReset={() => setScreen("reset")}
-            onTendTo={(areaId) => { setTendToAreaId(areaId); setScreen("tendto"); }}
+            onTendTo={(areaId) => { setTendToAreaId(areaId); setTendToOrigin("summary"); setScreen("tendto"); }}
           />
         )}
         {screen === "tendto" && (
           <TendToScreen
             areaId={tendToAreaId}
-            onBack={() => setScreen("summary")}
+            onBack={() => setScreen(tendToOrigin)}
             onDone={() => setScreen("home")}
           />
         )}
         {screen === "stats" && (
-          <StatsScreen onBack={() => setScreen("home")} history={history} />
+          <StatsScreen
+            onBack={() => setScreen("home")}
+            history={history}
+            onTendTo={(areaId) => { setTendToAreaId(areaId); setTendToOrigin("stats"); setScreen("tendto"); }}
+          />
         )}
       </div>
     </>
