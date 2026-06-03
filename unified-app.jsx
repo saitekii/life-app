@@ -632,6 +632,30 @@ function StatsScreen({ onBack, history, onTendTo }) {
           </div>
         </div>
 
+        {/* Trend chart */}
+        {history.length >= 2 && (() => {
+          const recent = history.slice(0, Math.min(history.length, 10)).reverse();
+          return (
+            <div className="trend-chart-section">
+              <p className="section-label">trends</p>
+              <p className="section-caption">last {recent.length} check-in{recent.length !== 1 ? "s" : ""}</p>
+              <div className="trend-chart-rows">
+                {AREAS.map(a => (
+                  <div key={a.id} className="trend-chart-row">
+                    <span className="trend-chart-label">{a.name}</span>
+                    <div className="trend-chart-dots">
+                      {recent.map(entry => {
+                        const state = entry.ratings?.[a.id] || "none";
+                        return <span key={entry.ts} className={`trend-dot trend-dot-${state}`} title={state} />;
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         {/* History list */}
         <div className="history-section">
           <p className="section-label">check-in history</p>
@@ -1018,6 +1042,17 @@ export default function App() {
         .legend-item.okay      { color: var(--color-text-label); }
         .legend-item.neglected { color: var(--color-state-neglected); }
         .legend-item.none      { color: var(--color-text-faint); }
+
+        .trend-chart-section { margin-bottom: 3rem; }
+        .trend-chart-rows { display: flex; flex-direction: column; gap: 8px; margin-top: 0.25rem; }
+        .trend-chart-row { display: flex; align-items: center; gap: 10px; }
+        .trend-chart-label { font-size: 10px; color: var(--color-text-body); letter-spacing: 0.02em; width: 140px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trend-chart-dots { display: flex; gap: 4px; align-items: center; }
+        .trend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .trend-dot-thriving  { background: var(--color-state-thriving); }
+        .trend-dot-okay      { background: var(--color-text-label); opacity: 0.5; }
+        .trend-dot-neglected { background: var(--color-state-neglected); }
+        .trend-dot-none      { background: var(--color-border-ui); }
 
         .history-section { border-top: 1px solid var(--color-border-section); padding-top: 1.75rem; }
         .empty-state { font-size: 11px; color: var(--color-text-label); letter-spacing: 0.04em; padding: 1rem 0; }
