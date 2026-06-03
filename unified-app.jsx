@@ -392,6 +392,9 @@ function SoftResetScreen({ onBack, neglectedIds }) {
   const [tier, setTier] = useState(1);
   const [action, setAction] = useState(null);
   const [confirmation, setConfirmation] = useState("");
+  const [completedCount, setCompletedCount] = useState(0);
+  const [momentumAreaId, setMomentumAreaId] = useState(null);
+  const [momentumText, setMomentumText] = useState(null);
   const [visible, setVisible] = useState(true);
   const lastText = useRef(null);
 
@@ -406,8 +409,18 @@ function SoftResetScreen({ onBack, neglectedIds }) {
     show(() => { setTier(1); setAction(a); setPhase("action"); });
   };
   const done = () => {
-    setConfirmation(CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)]);
-    show(() => setPhase("done"));
+    const newCount = completedCount + 1;
+    setCompletedCount(newCount);
+    if (newCount >= 2) {
+      const areaId = neglectedIds?.[0] ?? AREAS[Math.floor(Math.random() * AREAS.length)].id;
+      const text = getRandomAction(AREA_ACTIONS[areaId]);
+      setMomentumAreaId(areaId);
+      setMomentumText(text);
+      show(() => setPhase("momentum"));
+    } else {
+      setConfirmation(CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)]);
+      show(() => setPhase("done"));
+    }
   };
   const notThis = () => {
     const next = Math.min(tier + 1, 4);
@@ -416,6 +429,11 @@ function SoftResetScreen({ onBack, neglectedIds }) {
     show(() => { setTier(next); setAction(a); });
   };
   const reset = () => show(() => { setPhase("idle"); setTier(1); setAction(null); });
+  const commitMomentum = () => show(() => setPhase("momentum-confirmed"));
+  const keepSmall = () => {
+    setCompletedCount(0);
+    show(() => { setPhase("idle"); setTier(1); setAction(null); });
+  };
 
   return (
     <div className="screen reset-screen">
@@ -443,6 +461,23 @@ function SoftResetScreen({ onBack, neglectedIds }) {
           <>
             <p className="confirmation">{confirmation}</p>
             <button className="text-btn" onClick={reset}>again</button>
+          </>
+        )}
+        {phase === "momentum" && (
+          <>
+            <p className="momentum-intro">you're moving.</p>
+            <p className="momentum-area">{AREAS.find(a => a.id === momentumAreaId)?.name}</p>
+            <p className="tendto-action">{momentumText}</p>
+            <div className="action-btns">
+              <button className="abtn abtn-done" onClick={commitMomentum}>i'll do this</button>
+              <button className="abtn abtn-skip" onClick={keepSmall}>keep it small</button>
+            </div>
+          </>
+        )}
+        {phase === "momentum-confirmed" && (
+          <>
+            <p className="confirmation">go do it.</p>
+            <button className="abtn abtn-done" style={{maxWidth:"220px",width:"100%"}} onClick={onBack}>done</button>
           </>
         )}
       </div>
@@ -959,6 +994,8 @@ export default function App() {
         .abtn-skip { background: none; border: 1px solid transparent; color: var(--color-text-label); }
         .abtn-skip:hover { color: var(--color-text-secondary); border-color: var(--color-border-strong); }
         .confirmation { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 38px; color: var(--color-text-ui); text-align: center; margin-bottom: 2rem; }
+        .momentum-intro { font-size: 11px; letter-spacing: 0.1em; color: var(--color-text-label); margin-bottom: 0.75rem; text-align: center; }
+        .momentum-area  { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 15px; color: var(--color-text-warm); margin-bottom: 1.75rem; text-align: center; }
         .text-btn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.12em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 8px 0; transition: color 0.2s; }
         .text-btn:hover { color: var(--color-text-secondary); }
 
