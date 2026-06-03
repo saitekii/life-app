@@ -185,14 +185,26 @@ function getRandom(arr, excludeText = null) {
   return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
+function getTimeOfDayDomains() {
+  const h = new Date().getHours();
+  if (h >= 5  && h < 11) return ["physical", "stability", "mastery"];
+  if (h >= 11 && h < 15) return ["purpose", "learning", "mastery"];
+  if (h >= 15 && h < 18) return ["creativity", "relationships", "play"];
+  if (h >= 18 && h < 22) return ["relationships", "intimacy", "hope"];
+  return ["autonomy", "play", "physical"];
+}
+
 function getWeightedAction(tier, neglectedIds, excludeText = null) {
   const pool = ACTIONS[tier] || ACTIONS[4];
   const filtered = excludeText ? pool.filter(a => a.text !== excludeText) : pool;
-  if (!neglectedIds || neglectedIds.length === 0) return getRandom(filtered);
+  const timeDomains = getTimeOfDayDomains();
   const weighted = [];
   filtered.forEach(a => {
-    const overlap = a.domains.filter(d => neglectedIds.includes(d)).length;
-    const weight = overlap > 0 ? 3 : 1;
+    const neglectOverlap = neglectedIds?.length
+      ? a.domains.filter(d => neglectedIds.includes(d)).length
+      : 0;
+    const timeOverlap = a.domains.filter(d => timeDomains.includes(d)).length;
+    const weight = 1 + (neglectOverlap > 0 ? 2 : 0) + (timeOverlap > 0 ? 1 : 0);
     for (let i = 0; i < weight; i++) weighted.push(a);
   });
   return weighted[Math.floor(Math.random() * weighted.length)];
