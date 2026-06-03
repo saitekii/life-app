@@ -56,6 +56,35 @@ const ACTIONS = {
     { text: "take your medication if you haven't yet",   domains: ["physical","stability"] },
     { text: "put lotion on your hands",                  domains: ["physical","intimacy"] },
     { text: "stand and look out a window for one minute", domains: ["physical","hope"] },
+    // personal — instrument & tool initiation
+    { text: "open your DAW",                              domains: ["creativity","mastery"] },
+    { text: "put headphones on",                          domains: ["creativity","play"] },
+    { text: "listen to one unfinished song",              domains: ["creativity","mastery"] },
+    { text: "open your music folder",                     domains: ["creativity"] },
+    { text: "tap a rhythm on your desk",                  domains: ["creativity","play"] },
+    { text: "write down one song idea",                   domains: ["creativity","hope"] },
+    { text: "pick up the guitar",                         domains: ["creativity","mastery","play"] },
+    { text: "tune one string",                            domains: ["creativity","mastery"] },
+    { text: "play your favorite chord",                   domains: ["creativity","play"] },
+    { text: "put the guitar on your lap",                 domains: ["creativity","play"] },
+    { text: "play a riff you already know",               domains: ["creativity","mastery","play"] },
+    { text: "sit at the piano",                           domains: ["creativity","mastery"] },
+    { text: "place your hands on the keys",               domains: ["creativity","mastery"] },
+    { text: "improvise for thirty seconds",               domains: ["creativity","play"] },
+    { text: "open your sketchbook",                       domains: ["creativity","mastery"] },
+    { text: "hold a pencil",                              domains: ["creativity","play"] },
+    { text: "draw one line",                              domains: ["creativity","play"] },
+    { text: "sketch your coffee mug",                     domains: ["creativity","mastery"] },
+    { text: "open your journal",                          domains: ["learning","autonomy"] },
+    { text: "write today's date",                         domains: ["learning","autonomy"] },
+    { text: "write one word describing today",            domains: ["autonomy","intimacy"] },
+    { text: "write down one thing on your mind",          domains: ["autonomy","intimacy"] },
+    { text: "pick up the book",                           domains: ["learning"] },
+    { text: "open to the bookmark",                       domains: ["learning"] },
+    { text: "open your resume",                           domains: ["stability","purpose"] },
+    { text: "open a job board",                           domains: ["stability","hope"] },
+    { text: "read one job posting",                       domains: ["stability","purpose"] },
+    { text: "open your job tracker",                      domains: ["stability"] },
   ],
   3: [
     { text: "send one message to someone",                  domains: ["relationships","intimacy"] },
@@ -85,6 +114,37 @@ const ACTIONS = {
     { text: "set a timer for ten minutes and start one thing", domains: ["mastery","purpose"] },
     { text: "text someone you've been thinking about",      domains: ["relationships","intimacy"] },
     { text: "read one page of something",                   domains: ["learning"] },
+    // personal — micro sessions
+    { text: "record ten seconds of something",              domains: ["creativity","mastery"] },
+    { text: "improvise for one minute",                     domains: ["creativity","play","mastery"] },
+    { text: "make one drum loop",                           domains: ["creativity","mastery"] },
+    { text: "find one sound you like",                      domains: ["creativity","play"] },
+    { text: "write one chord progression",                  domains: ["creativity","mastery"] },
+    { text: "write one melody phrase",                      domains: ["creativity","mastery"] },
+    { text: "spend five minutes exploring sounds",          domains: ["creativity","play","mastery"] },
+    { text: "practice one chord change",                    domains: ["creativity","mastery"] },
+    { text: "play one scale slowly",                        domains: ["creativity","mastery"] },
+    { text: "play along with one song",                     domains: ["creativity","play","mastery"] },
+    { text: "play a chord progression",                     domains: ["creativity","mastery"] },
+    { text: "practice with one hand only",                  domains: ["creativity","mastery"] },
+    { text: "experiment with chord inversions",             domains: ["creativity","mastery","learning"] },
+    { text: "fill one corner of a page",                    domains: ["creativity","play"] },
+    { text: "sketch one object nearby",                     domains: ["creativity","mastery"] },
+    { text: "make one ugly drawing on purpose",             domains: ["creativity","play","autonomy"] },
+    { text: "copy a reference image for five minutes",      domains: ["creativity","mastery","learning"] },
+    { text: "write for two minutes",                        domains: ["learning","autonomy","intimacy"] },
+    { text: "list three things that happened today",        domains: ["learning","autonomy"] },
+    { text: "write one thing you're avoiding",              domains: ["autonomy","stability"] },
+    { text: "write one thing you're looking forward to",    domains: ["hope","autonomy"] },
+    { text: "breathe slowly for one minute",                domains: ["physical","autonomy"] },
+    { text: "count ten breaths",                            domains: ["physical","autonomy"] },
+    { text: "do a brief body scan",                         domains: ["physical","autonomy"] },
+    { text: "read for two minutes",                         domains: ["learning"] },
+    { text: "highlight one interesting idea",               domains: ["learning","mastery"] },
+    { text: "bookmark one job posting",                     domains: ["stability","hope"] },
+    { text: "update one bullet on your resume",             domains: ["stability","mastery"] },
+    { text: "write one sentence for a cover letter",        domains: ["stability","purpose"] },
+    { text: "spend two minutes browsing jobs",              domains: ["stability","hope"] },
   ],
   4: [
     { text: "sit still for a moment",             domains: ["physical","autonomy"] },
@@ -1037,7 +1097,7 @@ export default function App() {
 
         .app { min-height: 100vh; background: var(--color-bg); color: var(--color-text-primary); font-family: 'Geist Mono', monospace; font-weight: 300; }
         .loading-screen { min-height: 100vh; background: var(--color-bg); display: flex; align-items: center; justify-content: center; }
-        .loading-text { font-family: monospace; font-size: 11px; color: var(--color-text-faint); letter-spacing: 0.1em; }
+        .loading-text { font-family: monospace; font-size: 13px; color: var(--color-text-faint); letter-spacing: 0.08em; }
 
         .screen { min-height: 100vh; display: flex; flex-direction: column; align-items: center; animation: fadeUp 0.4s ease both; }
 
@@ -1046,77 +1106,77 @@ export default function App() {
         /* HOME */
         .home-screen { justify-content: center; padding: 2rem; gap: 0; position: relative; }
         .home-top { text-align: center; margin-bottom: 3rem; }
-        .greeting { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(28px,6vw,40px); color: var(--color-text-primary); margin-bottom: 0.4rem; }
-        .last-checkin { font-size: 10px; color: var(--color-text-label); letter-spacing: 0.1em; }
+        .greeting { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(28px,6vw,40px); color: var(--color-text-primary); margin-bottom: 0.5rem; }
+        .last-checkin { font-size: 13px; color: var(--color-text-label); letter-spacing: 0.04em; }
 
-        .theme-toggle { position: absolute; top: 1.5rem; right: 1.75rem; font-size: 14px; background: none; border: none; cursor: pointer; color: var(--color-text-label); padding: 4px; transition: color 0.2s; line-height: 1; }
+        .theme-toggle { position: absolute; top: 1.5rem; right: 1.75rem; font-size: 16px; background: none; border: none; cursor: pointer; color: var(--color-text-label); padding: 6px; transition: color 0.2s; line-height: 1; }
         .theme-toggle:hover { color: var(--color-text-secondary); }
 
-        .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 480px; margin-bottom: 1.25rem; }
-        .door { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 1.5rem; background: none; border: 1px solid var(--color-border-ui); border-radius: 4px; cursor: pointer; text-align: left; transition: border-color 0.2s, background 0.2s; }
+        .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 480px; margin-bottom: 1.5rem; }
+        .door { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 1.75rem; background: none; border: 1px solid var(--color-border-ui); border-radius: 6px; cursor: pointer; text-align: left; transition: border-color 0.2s, background 0.2s; }
         .door:hover { border-color: var(--color-text-ui); background: var(--color-bg-raised); }
-        .door-eyebrow { font-size: 9px; letter-spacing: 0.18em; color: var(--color-text-label); text-transform: uppercase; }
-        .door-title { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--color-text-primary); line-height: 1.2; }
-        .door-sub { font-size: 10px; color: var(--color-text-ui); line-height: 1.7; letter-spacing: 0.03em; }
+        .door-eyebrow { font-size: 11px; letter-spacing: 0.12em; color: var(--color-text-label); text-transform: uppercase; }
+        .door-title { font-family: 'Instrument Serif', serif; font-size: 24px; color: var(--color-text-primary); line-height: 1.2; }
+        .door-sub { font-size: 13px; color: var(--color-text-ui); line-height: 1.6; }
         .door-reset:hover .door-title { color: var(--color-text-warm); }
         .door-checkin:hover .door-title { color: var(--color-state-thriving); }
 
-        .stats-link { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 6px 0; margin-bottom: 1.5rem; transition: color 0.2s; font-weight: 300; }
+        .stats-link { font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.06em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 8px 0; margin-bottom: 1rem; transition: color 0.2s; font-weight: 300; }
         .stats-link:hover { color: var(--color-text-secondary); }
 
         .trends { width: 100%; max-width: 480px; border-top: 1px solid var(--color-border-section); padding-top: 1.5rem; }
-        .trends-label { font-size: 9px; letter-spacing: 0.16em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 1rem; }
+        .trends-label { font-size: 11px; letter-spacing: 0.12em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 1rem; }
         .trends-list { display: flex; flex-direction: column; gap: 2px; }
-        .trend-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
-        .trend-name { font-size: 11px; color: var(--color-text-body); letter-spacing: 0.04em; }
-        .trend-state { font-size: 10px; letter-spacing: 0.08em; }
+        .trend-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+        .trend-name { font-size: 13px; color: var(--color-text-body); letter-spacing: 0.02em; }
+        .trend-state { font-size: 13px; letter-spacing: 0.04em; }
         .trend-state.neglected { color: var(--color-state-neglected); }
         .trend-state.thriving  { color: var(--color-state-thriving); }
 
-        .onboarding { width: 100%; max-width: 480px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.9rem; }
-        .onboarding-line { font-size: 10px; color: var(--color-text-label); letter-spacing: 0.04em; line-height: 1.8; }
+        .onboarding { width: 100%; max-width: 480px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+        .onboarding-line { font-size: 13px; color: var(--color-text-label); letter-spacing: 0.02em; line-height: 1.7; }
         .onboarding-label { color: var(--color-text-ui); margin-right: 0.5em; }
 
         /* SOFT RESET */
         .reset-screen { justify-content: center; padding: 2rem; position: relative; }
-        .back-btn { position: absolute; top: 1.5rem; left: 1.75rem; font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 4px 0; transition: color 0.2s; font-weight: 300; }
+        .back-btn { position: absolute; top: 1.5rem; left: 1.75rem; font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.06em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 8px 0; transition: color 0.2s; font-weight: 300; }
         .back-btn:hover { color: var(--color-text-secondary); }
         .reset-center { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; opacity: 0; transform: translateY(6px); transition: opacity 0.25s ease, transform 0.25s ease; }
         .reset-center.vis { opacity: 1; transform: translateY(0); }
-        .reset-tagline { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 18px; color: var(--color-text-body); text-align: center; margin-bottom: 2.5rem; line-height: 1.6; }
-        .big-circle { width: 96px; height: 96px; border-radius: 50%; border: 1px solid var(--color-border-strong); background: none; font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 300; color: var(--color-text-ui); letter-spacing: 0.08em; cursor: pointer; transition: border-color 0.2s, color 0.2s, transform 0.15s; }
+        .reset-tagline { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 20px; color: var(--color-text-body); text-align: center; margin-bottom: 2.5rem; line-height: 1.6; }
+        .big-circle { width: 100px; height: 100px; border-radius: 50%; border: 1px solid var(--color-border-strong); background: none; font-family: 'Geist Mono', monospace; font-size: 14px; font-weight: 300; color: var(--color-text-ui); letter-spacing: 0.06em; cursor: pointer; transition: border-color 0.2s, color 0.2s, transform 0.15s; }
         .big-circle:hover { border-color: var(--color-text-ui); color: var(--color-text-primary); transform: scale(1.04); }
-        .tier-dots { display: flex; gap: 6px; margin-bottom: 2rem; }
-        .tdot { width: 5px; height: 5px; border-radius: 50%; background: var(--color-border-ui); transition: background 0.3s; }
+        .tier-dots { display: flex; gap: 7px; margin-bottom: 2rem; }
+        .tdot { width: 6px; height: 6px; border-radius: 50%; background: var(--color-border-ui); transition: background 0.3s; }
         .tdot.on { background: var(--color-text-ui); }
         .action-text { font-family: 'Instrument Serif', serif; font-size: clamp(26px,5vw,38px); color: var(--color-text-primary); text-align: center; line-height: 1.3; margin-bottom: 3rem; }
-        .action-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 220px; }
-        .abtn { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 300; letter-spacing: 0.1em; border-radius: 2px; padding: 13px 0; cursor: pointer; transition: all 0.18s; width: 100%; }
+        .action-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 240px; }
+        .abtn { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 300; letter-spacing: 0.08em; border-radius: 3px; padding: 16px 0; cursor: pointer; transition: all 0.18s; width: 100%; }
         .abtn-done { background: none; border: 1px solid var(--color-border-strong); color: var(--color-text-secondary); }
         .abtn-done:hover { border-color: var(--color-text-ui); color: var(--color-text-primary); background: var(--color-bg-raised); }
         .abtn-skip { background: none; border: 1px solid transparent; color: var(--color-text-label); }
         .abtn-skip:hover { color: var(--color-text-secondary); border-color: var(--color-border-strong); }
         .confirmation { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 38px; color: var(--color-text-ui); text-align: center; margin-bottom: 2rem; }
-        .momentum-intro { font-size: 11px; letter-spacing: 0.1em; color: var(--color-text-label); margin-bottom: 0.75rem; text-align: center; }
-        .momentum-area  { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 15px; color: var(--color-text-warm); margin-bottom: 1.75rem; text-align: center; }
-        .text-btn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.12em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 8px 0; transition: color 0.2s; }
+        .momentum-intro { font-size: 13px; letter-spacing: 0.08em; color: var(--color-text-label); margin-bottom: 0.75rem; text-align: center; }
+        .momentum-area  { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 17px; color: var(--color-text-warm); margin-bottom: 1.75rem; text-align: center; }
+        .text-btn { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 300; letter-spacing: 0.08em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 10px 0; transition: color 0.2s; }
         .text-btn:hover { color: var(--color-text-secondary); }
 
         /* CHECK-IN */
         .checkin-screen { padding: 0; justify-content: flex-start; }
         .checkin-top { width: 100%; padding: 1.25rem 1.75rem 0; display: flex; align-items: center; gap: 12px; }
-        .back-btn-inline { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; font-weight: 300; white-space: nowrap; }
+        .back-btn-inline { font-family: 'Geist Mono', monospace; font-size: 13px; letter-spacing: 0.06em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 4px 0; transition: color 0.2s; font-weight: 300; white-space: nowrap; }
         .back-btn-inline:hover { color: var(--color-text-secondary); }
-        .progress-track { flex: 1; height: 1px; background: var(--color-border-ui); }
-        .progress-fill { height: 100%; background: var(--color-text-label); transition: width 0.3s ease; }
-        .progress-label { font-size: 10px; color: var(--color-text-label); letter-spacing: 0.08em; white-space: nowrap; }
+        .progress-track { flex: 1; height: 2px; background: var(--color-border-ui); border-radius: 1px; }
+        .progress-fill { height: 100%; background: var(--color-text-label); transition: width 0.3s ease; border-radius: 1px; }
+        .progress-label { font-size: 13px; color: var(--color-text-label); letter-spacing: 0.04em; white-space: nowrap; }
         .card-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; width: 100%; max-width: 480px; margin: 0 auto; opacity: 0; transform: translateY(8px); transition: opacity 0.22s ease, transform 0.22s ease; }
         .card-center.vis { opacity: 1; transform: translateY(0); }
-        .card-category { font-size: 9px; letter-spacing: 0.2em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 2rem; }
+        .card-category { font-size: 11px; letter-spacing: 0.15em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 1.75rem; }
         .card-name { font-family: 'Instrument Serif', serif; font-size: clamp(30px,6vw,44px); font-weight: 400; color: var(--color-text-primary); text-align: center; line-height: 1.2; margin-bottom: 0.75rem; }
-        .card-hint { font-size: 11px; color: var(--color-text-label); text-align: center; letter-spacing: 0.04em; line-height: 1.7; margin-bottom: 3rem; }
-        .rating-row { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; justify-content: center; }
-        .rbtn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.1em; padding: 11px 18px; border-radius: 2px; border: 1px solid var(--color-border-strong); background: none; color: var(--color-text-body); cursor: pointer; transition: all 0.18s; }
+        .card-hint { font-size: 13px; color: var(--color-text-label); text-align: center; letter-spacing: 0.02em; line-height: 1.7; margin-bottom: 2.5rem; }
+        .rating-row { display: flex; gap: 10px; margin-bottom: 1.25rem; flex-wrap: wrap; justify-content: center; }
+        .rbtn { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 300; letter-spacing: 0.06em; padding: 14px 24px; border-radius: 3px; border: 1px solid var(--color-border-strong); background: none; color: var(--color-text-body); cursor: pointer; transition: all 0.18s; }
         .rbtn-thriving:hover  { border-color: var(--color-border-state-thriving); color: var(--color-state-thriving-hover); background: var(--color-bg-state-thriving); }
         .rbtn-okay:hover      { border-color: var(--color-border-state-okay); color: var(--color-state-okay-hover); background: var(--color-bg-raised); }
         .rbtn-neglected:hover { border-color: var(--color-border-state-neglected); color: var(--color-state-neglected-hover); background: var(--color-bg-state-neglected); }
@@ -1124,46 +1184,46 @@ export default function App() {
 
         /* SUMMARY */
         .summary-screen { justify-content: flex-start; padding: 0; }
-        .summary-inner { width: 100%; max-width: 520px; padding: 4rem 2rem 4rem; margin: 0 auto; }
+        .summary-inner { width: 100%; max-width: 520px; padding: 3.5rem 2rem; margin: 0 auto; }
         .summary-head { margin-bottom: 2.5rem; }
-        .summary-insight { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(20px,4vw,26px); color: var(--color-text-ui); line-height: 1.4; margin-bottom: 0.4rem; }
-        .summary-date { font-size: 10px; color: var(--color-text-label); letter-spacing: 0.1em; }
-        .sum-cat { margin-bottom: 1.75rem; }
-        .sum-cat-label { font-size: 9px; letter-spacing: 0.18em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-border-section); }
-        .sum-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--color-border-row); }
+        .summary-insight { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(20px,4vw,26px); color: var(--color-text-ui); line-height: 1.4; margin-bottom: 0.5rem; }
+        .summary-date { font-size: 13px; color: var(--color-text-label); letter-spacing: 0.04em; }
+        .sum-cat { margin-bottom: 2rem; }
+        .sum-cat-label { font-size: 11px; letter-spacing: 0.14em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--color-border-section); }
+        .sum-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-border-row); }
         .sum-row:last-child { border-bottom: none; }
-        .sum-name { font-size: 11px; color: var(--color-text-body); letter-spacing: 0.03em; }
-        .sum-state { font-size: 10px; letter-spacing: 0.08em; }
+        .sum-name { font-size: 13px; color: var(--color-text-body); letter-spacing: 0.02em; }
+        .sum-state { font-size: 12px; letter-spacing: 0.06em; }
         .s-thriving  { color: var(--color-state-thriving); }
         .s-okay      { color: var(--color-text-body); }
         .s-neglected { color: var(--color-state-neglected); }
         .s-skip      { color: var(--color-text-faint); }
         .sum-bridge { padding: 2rem 0 0; }
-        .sum-bridge-btn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.12em; color: var(--color-text-ui); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; }
+        .sum-bridge-btn { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 300; letter-spacing: 0.06em; color: var(--color-text-ui); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; }
         .sum-bridge-btn:hover { color: var(--color-text-warm); }
         .sum-actions { display: flex; gap: 12px; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--color-border-section); }
 
         /* TEND TO */
         .tendto-screen { justify-content: flex-start; padding: 0; position: relative; }
-        .tendto-area-label { display: flex; flex-direction: column; align-items: center; padding: 3.5rem 2rem 0; gap: 4px; }
-        .tendto-category { font-size: 9px; letter-spacing: 0.2em; color: var(--color-text-label); text-transform: uppercase; }
+        .tendto-area-label { display: flex; flex-direction: column; align-items: center; padding: 3.5rem 2rem 0; gap: 6px; }
+        .tendto-category { font-size: 11px; letter-spacing: 0.15em; color: var(--color-text-label); text-transform: uppercase; }
         .tendto-name { font-family: 'Instrument Serif', serif; font-size: clamp(22px,4.5vw,30px); color: var(--color-text-warm); }
         .tendto-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 2rem 4rem; width: 100%; max-width: 480px; margin: 0 auto; opacity: 0; transform: translateY(6px); transition: opacity 0.25s ease, transform 0.25s ease; }
         .tendto-center.vis { opacity: 1; transform: translateY(0); }
         .tendto-action { font-family: 'Instrument Serif', serif; font-size: clamp(18px,3.5vw,24px); color: var(--color-text-primary); text-align: center; line-height: 1.6; margin-bottom: 2.5rem; }
-        .tendto-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 240px; margin-bottom: 1.25rem; }
+        .tendto-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 260px; margin-bottom: 1.25rem; }
         .tendto-confirmation { font-family: 'Instrument Serif', serif; font-style: italic; font-size: clamp(20px,4vw,28px); color: var(--color-text-body); text-align: center; line-height: 1.5; margin-bottom: 2rem; }
-        .tendto-done-btn { width: 100%; max-width: 240px; }
+        .tendto-done-btn { width: 100%; max-width: 260px; }
 
         /* SUMMARY — tappable neglected rows + progress indicators */
-        .sum-row-tap { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--color-border-row); background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; text-align: left; transition: background 0.15s; }
+        .sum-row-tap { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--color-border-row); background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; text-align: left; transition: background 0.15s; }
         .sum-row-tap:last-child { border-bottom: none; }
         .sum-row-tap:hover { background: var(--color-bg-hover); }
         .sum-row-tap:hover .sum-name { color: var(--color-text-warm); }
         .sum-row-tap:hover .sum-row-arrow { opacity: 1; }
-        .sum-row-right { display: flex; align-items: center; gap: 6px; }
-        .sum-row-arrow { font-size: 10px; color: var(--color-state-neglected); opacity: 0.4; transition: opacity 0.15s; }
-        .sum-change { font-size: 10px; font-family: 'Geist Mono', monospace; font-weight: 300; }
+        .sum-row-right { display: flex; align-items: center; gap: 8px; }
+        .sum-row-arrow { font-size: 12px; color: var(--color-state-neglected); opacity: 0.4; transition: opacity 0.15s; }
+        .sum-change { font-size: 12px; font-family: 'Geist Mono', monospace; font-weight: 300; }
         .sum-change-up   { color: var(--color-state-thriving); }
         .sum-change-down { color: var(--color-state-neglected); }
 
@@ -1172,33 +1232,33 @@ export default function App() {
         .stats-inner { width: 100%; max-width: 560px; padding: 2rem; margin: 0 auto; }
         .stats-header { margin-bottom: 2.5rem; }
         .stats-title { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; color: var(--color-text-primary); margin: 0.75rem 0 0.25rem; }
-        .stats-sub { font-size: 10px; color: var(--color-text-label); letter-spacing: 0.1em; }
+        .stats-sub { font-size: 13px; color: var(--color-text-label); letter-spacing: 0.04em; }
 
-        .section-label { font-size: 9px; letter-spacing: 0.2em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 0.4rem; }
-        .section-caption { font-size: 10px; color: var(--color-text-label); letter-spacing: 0.04em; margin-bottom: 1.25rem; }
+        .section-label { font-size: 11px; letter-spacing: 0.15em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 0.4rem; }
+        .section-caption { font-size: 13px; color: var(--color-text-label); letter-spacing: 0.02em; margin-bottom: 1.25rem; }
 
         .map-section { margin-bottom: 3rem; }
-        .area-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; margin-bottom: 1rem; }
-        .map-cell { padding: 10px 12px; border-radius: 3px; display: flex; flex-direction: column; gap: 3px; cursor: pointer; text-align: left; transition: opacity 0.15s; }
+        .area-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 1rem; }
+        .map-cell { padding: 12px 14px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; cursor: pointer; text-align: left; transition: opacity 0.15s; }
         .map-cell:hover { opacity: 0.75; }
         .map-cell-thriving  { background: var(--color-cell-thriving-bg);  border: 1px solid var(--color-cell-thriving-border);  color: var(--color-cell-thriving-text); }
         .map-cell-neglected { background: var(--color-cell-neglected-bg); border: 1px solid var(--color-cell-neglected-border); color: var(--color-cell-neglected-text); }
         .map-cell-okay      { background: var(--color-cell-okay-bg);      border: 1px solid var(--color-cell-okay-border);      color: var(--color-cell-okay-text); }
         .map-cell-none      { background: var(--color-cell-none-bg);      border: 1px solid var(--color-cell-none-border);      color: var(--color-cell-none-text); }
-        .map-cell-name { font-size: 11px; letter-spacing: 0.03em; line-height: 1.3; }
-        .map-cell-state { font-size: 9px; letter-spacing: 0.1em; opacity: 0.7; }
+        .map-cell-name { font-size: 12px; letter-spacing: 0.02em; line-height: 1.3; }
+        .map-cell-state { font-size: 11px; letter-spacing: 0.06em; opacity: 0.7; }
 
         .map-legend { display: flex; gap: 16px; flex-wrap: wrap; }
-        .legend-item { font-size: 9px; letter-spacing: 0.1em; }
+        .legend-item { font-size: 11px; letter-spacing: 0.06em; }
         .legend-item.thriving  { color: var(--color-state-thriving); }
         .legend-item.okay      { color: var(--color-text-label); }
         .legend-item.neglected { color: var(--color-state-neglected); }
         .legend-item.none      { color: var(--color-text-faint); }
 
         .trend-chart-section { margin-bottom: 3rem; }
-        .trend-chart-rows { display: flex; flex-direction: column; gap: 8px; margin-top: 0.25rem; }
+        .trend-chart-rows { display: flex; flex-direction: column; gap: 10px; margin-top: 0.25rem; }
         .trend-chart-row { display: flex; align-items: center; gap: 10px; }
-        .trend-chart-label { font-size: 10px; color: var(--color-text-body); letter-spacing: 0.02em; width: 140px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trend-chart-label { font-size: 12px; color: var(--color-text-body); letter-spacing: 0.02em; width: 145px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .trend-chart-dots { display: flex; gap: 4px; align-items: center; }
         .trend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .trend-dot-thriving  { background: var(--color-state-thriving); }
@@ -1207,44 +1267,44 @@ export default function App() {
         .trend-dot-none      { background: var(--color-border-ui); }
 
         .history-section { border-top: 1px solid var(--color-border-section); padding-top: 1.75rem; }
-        .empty-state { font-size: 11px; color: var(--color-text-label); letter-spacing: 0.04em; padding: 1rem 0; }
+        .empty-state { font-size: 13px; color: var(--color-text-label); letter-spacing: 0.02em; padding: 1rem 0; }
 
         .history-entry { border-bottom: 1px solid var(--color-border-row); }
         .history-entry:last-child { border-bottom: none; }
 
-        .history-row { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 14px 0; background: none; border: none; cursor: pointer; text-align: left; transition: opacity 0.15s; }
+        .history-row { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 16px 0; background: none; border: none; cursor: pointer; text-align: left; transition: opacity 0.15s; }
         .history-row:hover { opacity: 0.75; }
 
-        .history-left { display: flex; flex-direction: column; gap: 3px; }
-        .history-date { font-size: 12px; color: var(--color-text-secondary); letter-spacing: 0.04em; }
-        .history-meta { font-size: 10px; color: var(--color-text-label); letter-spacing: 0.06em; }
+        .history-left { display: flex; flex-direction: column; gap: 4px; }
+        .history-date { font-size: 14px; color: var(--color-text-secondary); letter-spacing: 0.02em; }
+        .history-meta { font-size: 12px; color: var(--color-text-label); letter-spacing: 0.04em; }
         .meta-thr { color: var(--color-state-thriving); }
         .meta-neg { color: var(--color-state-neglected); }
-        .history-chevron { font-size: 16px; color: var(--color-text-label); font-weight: 300; line-height: 1; }
+        .history-chevron { font-size: 18px; color: var(--color-text-label); font-weight: 300; line-height: 1; }
 
         .history-detail { padding: 0 0 1rem; }
         .detail-cat { margin-bottom: 1rem; }
-        .detail-cat-label { font-size: 9px; letter-spacing: 0.16em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 0.4rem; }
-        .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--color-border-detail); }
+        .detail-cat-label { font-size: 11px; letter-spacing: 0.12em; color: var(--color-text-label); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--color-border-detail); }
         .detail-row:last-child { border-bottom: none; }
-        .detail-name { font-size: 11px; color: var(--color-text-ui); letter-spacing: 0.03em; }
-        .detail-state { font-size: 10px; letter-spacing: 0.08em; }
+        .detail-name { font-size: 13px; color: var(--color-text-ui); letter-spacing: 0.02em; }
+        .detail-state { font-size: 12px; letter-spacing: 0.06em; }
 
         /* MY ACTIONS */
         .myactions-screen { justify-content: flex-start; padding: 0; }
         .myactions-inner { width: 100%; max-width: 560px; padding: 2rem; margin: 0 auto; }
         .myactions-add { display: flex; gap: 8px; margin-bottom: 2rem; }
-        .myactions-input { flex: 1; font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 300; letter-spacing: 0.04em; background: none; border: 1px solid var(--color-border-strong); border-radius: 2px; padding: 11px 14px; color: var(--color-text-primary); outline: none; }
+        .myactions-input { flex: 1; font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 300; letter-spacing: 0.02em; background: none; border: 1px solid var(--color-border-strong); border-radius: 3px; padding: 13px 16px; color: var(--color-text-primary); outline: none; }
         .myactions-input::placeholder { color: var(--color-text-faint); }
         .myactions-input:focus { border-color: var(--color-text-ui); }
-        .myactions-add-btn { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 300; letter-spacing: 0.1em; padding: 11px 18px; background: none; border: 1px solid var(--color-border-strong); border-radius: 2px; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+        .myactions-add-btn { font-family: 'Geist Mono', monospace; font-size: 13px; font-weight: 300; letter-spacing: 0.06em; padding: 13px 20px; background: none; border: 1px solid var(--color-border-strong); border-radius: 3px; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s; white-space: nowrap; }
         .myactions-add-btn:hover:not(:disabled) { border-color: var(--color-text-ui); color: var(--color-text-primary); background: var(--color-bg-raised); }
         .myactions-add-btn:disabled { opacity: 0.35; cursor: default; }
         .myactions-list { display: flex; flex-direction: column; }
-        .myactions-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--color-border-row); }
+        .myactions-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--color-border-row); }
         .myactions-row:last-child { border-bottom: none; }
-        .myactions-text { font-size: 11px; color: var(--color-text-body); letter-spacing: 0.03em; line-height: 1.5; flex: 1; padding-right: 1rem; }
-        .myactions-delete { font-size: 18px; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 4px 8px; transition: color 0.15s; line-height: 1; }
+        .myactions-text { font-size: 13px; color: var(--color-text-body); letter-spacing: 0.02em; line-height: 1.5; flex: 1; padding-right: 1rem; }
+        .myactions-delete { font-size: 18px; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 6px 10px; transition: color 0.15s; line-height: 1; }
         .myactions-delete:hover { color: var(--color-state-neglected); }
       `}</style>
 
