@@ -230,7 +230,7 @@ function getWeightedAction(tier, neglectedIds, excludeText = null, customActions
       ? a.domains.filter(d => neglectedIds.includes(d)).length
       : 0;
     const timeOverlap = a.domains.filter(d => timeDomains.includes(d)).length;
-    const weight = 1 + (neglectOverlap > 0 ? 2 : 0) + (timeOverlap > 0 ? 1 : 0);
+    const weight = 1 + (neglectOverlap * 2) + (timeOverlap > 0 ? 1 : 0);
     for (let i = 0; i < weight; i++) weighted.push(a);
   });
   return weighted[Math.floor(Math.random() * weighted.length)];
@@ -312,6 +312,7 @@ function getNeglectedFromHistory(history) {
   return Object.entries(counts)
     .filter(([, c]) => c >= 1)
     .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
     .map(([id]) => id);
 }
 
@@ -357,7 +358,7 @@ function dominantState(stats) {
 
 // ─── SCREENS ─────────────────────────────────────────────────────────────────
 
-function HomeScreen({ onSoftReset, onCheckin, onStats, onMyActions, history, trends, isDark, onToggleTheme }) {
+function HomeScreen({ onSoftReset, onCheckin, onStats, onMyActions, onInfo, history, trends, isDark, onToggleTheme }) {
   const lastCheckin = history[0];
   return (
     <div className="screen home-screen">
@@ -384,10 +385,6 @@ function HomeScreen({ onSoftReset, onCheckin, onStats, onMyActions, history, tre
         </button>
       </div>
 
-      <button className="stats-link" onClick={onMyActions}>
-        my soft reset actions →
-      </button>
-
       {history.length === 0 && (
         <div className="onboarding">
           <p className="onboarding-line">
@@ -406,6 +403,14 @@ function HomeScreen({ onSoftReset, onCheckin, onStats, onMyActions, history, tre
           view history & patterns →
         </button>
       )}
+
+      <button className="stats-link" onClick={onMyActions}>
+        my soft reset actions →
+      </button>
+
+      <button className="stats-link" onClick={onInfo}>
+        how this works →
+      </button>
 
       {trends && (
         <div className="trends">
@@ -585,7 +590,7 @@ function CheckinScreen({ onBack, onComplete }) {
   const [visible, setVisible] = useState(true);
 
   const current = AREAS[index];
-  const progress = (index / AREAS.length) * 100;
+  const progress = ((index + 1) / AREAS.length) * 100;
 
   const advance = (newRatings) => {
     setVisible(false);
@@ -796,6 +801,65 @@ function StatsScreen({ onBack, history, onTendTo }) {
               </div>
             );
           })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function InfoScreen({ onBack }) {
+  return (
+    <div className="screen info-screen">
+      <div className="info-inner">
+        <div className="stats-header">
+          <button className="back-btn-inline" onClick={onBack}>← back</button>
+          <h2 className="stats-title">how this works</h2>
+        </div>
+
+        <div className="info-section">
+          <p className="section-label">the idea</p>
+          <p className="info-p">
+            This app is for getting unstuck. Not for planning, tracking habits, or optimizing your life — just for those moments when you're frozen, overwhelmed, or quietly drifting and need the smallest possible nudge back into motion.
+          </p>
+          <p className="info-p">
+            There are no streaks, no overdue states, nothing that accumulates or judges. Coming back after weeks away feels exactly the same as day one. That's intentional.
+          </p>
+        </div>
+
+        <div className="info-section">
+          <p className="section-label">soft reset</p>
+          <p className="info-p">
+            Tap begin and you get one small action. If it doesn't fit, "not this one" always moves toward something simpler — never harder. There are four tiers, from small environmental shifts (open a window, change rooms) down to just breathing and being here.
+          </p>
+          <p className="info-p">
+            You never have to do the suggested thing. The point is motion in some direction, not that specific direction.
+          </p>
+          <p className="info-p">
+            After completing a couple of actions in a row, it may offer something slightly larger. You can take it or keep it small — either is fine.
+          </p>
+        </div>
+
+        <div className="info-section">
+          <p className="section-label">life areas</p>
+          <p className="info-p">
+            Twelve areas of life, one at a time. For each one you choose: thriving, okay, or neglected — or skip it entirely. There's no right answer and nothing to aim for.
+          </p>
+          <p className="info-p">
+            The goal is just to notice. Sometimes things that have been quietly going hungry become visible when you name them.
+          </p>
+          <p className="info-p">
+            What you mark as neglected gently shapes which Soft Reset suggestions you're more likely to see. This happens in the background — you don't need to think about it.
+          </p>
+        </div>
+
+        <div className="info-section">
+          <p className="section-label">a note</p>
+          <p className="info-p">
+            Use this when it helps and ignore it when it doesn't. There's no correct frequency. Once a week, once a month, or just when you're stuck — all of those are fine.
+          </p>
+          <p className="info-p">
+            The app doesn't know how you're doing. Only you do.
+          </p>
         </div>
       </div>
     </div>
@@ -1328,6 +1392,15 @@ export default function App() {
         .import-textarea { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.02em; background: none; border: 1px solid var(--color-border-strong); border-radius: 2px; padding: 12px 14px; color: var(--color-text-secondary); outline: none; resize: vertical; line-height: 1.6; width: 100%; box-sizing: border-box; }
         .import-textarea::placeholder { color: var(--color-text-faint); }
         .import-textarea:focus { border-color: var(--color-text-ui); }
+
+        /* INFO */
+        .info-screen { justify-content: flex-start; padding: 0; }
+        .info-inner { width: 100%; max-width: 520px; padding: 2rem 2rem 4rem; margin: 0 auto; }
+        .info-section { padding: 1.75rem 0; border-top: 1px solid var(--color-border-section); }
+        .info-section:first-of-type { border-top: none; padding-top: 0; }
+        .info-section .section-label { margin-bottom: 1rem; }
+        .info-p { font-size: 12px; color: var(--color-text-body); letter-spacing: 0.03em; line-height: 1.9; margin-bottom: 0.9rem; }
+        .info-p:last-child { margin-bottom: 0; }
       `}</style>
 
       <div className="app">
@@ -1337,6 +1410,7 @@ export default function App() {
             onCheckin={() => setScreen("checkin")}
             onStats={() => setScreen("stats")}
             onMyActions={() => setScreen("myactions")}
+            onInfo={() => setScreen("info")}
             history={history}
             trends={trends}
             isDark={isDark}
@@ -1381,6 +1455,9 @@ export default function App() {
             onImport={handleImportCustomActions}
             onDelete={handleDeleteCustomAction}
           />
+        )}
+        {screen === "info" && (
+          <InfoScreen onBack={() => setScreen("home")} />
         )}
       </div>
     </>
