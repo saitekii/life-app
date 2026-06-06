@@ -192,6 +192,27 @@ const AREA_ACTIONS = {
 
 const CONFIRMATIONS = ["good.","that counts.","that's enough.","you moved.","okay.","done.","that's real."];
 
+const MOMENTUM_ACTIONS = [
+  { text: "spend five minutes tidying one spot in your space",            domains: ["stability", "physical"] },
+  { text: "write a few sentences about something on your mind",           domains: ["creativity", "autonomy", "intimacy"] },
+  { text: "make a short honest list of what's actually on your plate",    domains: ["stability", "autonomy"] },
+  { text: "text or message someone you've been meaning to reach",         domains: ["relationships", "intimacy"] },
+  { text: "make yourself something to eat",                               domains: ["physical"] },
+  { text: "do five minutes of movement — stretch, walk, shake it out",    domains: ["physical", "play"] },
+  { text: "read a few pages of something",                                domains: ["learning"] },
+  { text: "spend five minutes on something creative, no goal",            domains: ["creativity", "play"] },
+  { text: "open one thing you've been avoiding, just to look at it",      domains: ["mastery", "stability"] },
+  { text: "write down a few things you want to do this week",             domains: ["hope", "autonomy"] },
+  { text: "do one small thing for your future self",                      domains: ["hope", "purpose"] },
+  { text: "spend a few minutes on a skill you're building",               domains: ["mastery", "learning"] },
+  { text: "send one message you've been putting off",                     domains: ["relationships", "stability"] },
+  { text: "listen to a full song and just let yourself be in it",         domains: ["creativity", "play", "hope"] },
+  { text: "write down one thing you're proud of this week",               domains: ["recognition", "autonomy"] },
+  { text: "tidy up your immediate workspace",                             domains: ["stability"] },
+  { text: "check in with how your body is feeling right now",             domains: ["physical", "autonomy"] },
+  { text: "find one small thing to look forward to",                      domains: ["hope", "play"] },
+];
+
 const SUMMARY_MSGS = (neglected, thriving) => {
   if (neglected.length === 0 && thriving.length >= 3) return "things feel pretty nourished right now.";
   if (neglected.length >= 6) return "a lot feels stretched thin. that's okay to notice.";
@@ -240,6 +261,19 @@ function getRandomAction(arr, excludeText = null) {
   const filtered = excludeText ? arr.filter(s => s !== excludeText) : arr;
   if (!filtered.length) return arr[0];
   return filtered[Math.floor(Math.random() * filtered.length)];
+}
+
+function getMomentumAction(neglectedIds, excludeText = null) {
+  const filtered = excludeText ? MOMENTUM_ACTIONS.filter(a => a.text !== excludeText) : MOMENTUM_ACTIONS;
+  const weighted = [];
+  filtered.forEach(a => {
+    const overlap = neglectedIds?.length
+      ? a.domains.filter(d => neglectedIds.includes(d)).length
+      : 0;
+    const weight = 1 + (overlap * 2);
+    for (let i = 0; i < weight; i++) weighted.push(a);
+  });
+  return weighted[Math.floor(Math.random() * weighted.length)];
 }
 
 function getChangeIndicator(areaId, currentRatings, previousRatings) {
@@ -441,7 +475,6 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
   const [action, setAction] = useState(null);
   const [confirmation, setConfirmation] = useState("");
   const [completedCount, setCompletedCount] = useState(0);
-  const [momentumAreaId, setMomentumAreaId] = useState(null);
   const [momentumText, setMomentumText] = useState(null);
   const [visible, setVisible] = useState(true);
   const lastText = useRef(null);
@@ -460,10 +493,8 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
     const newCount = completedCount + 1;
     setCompletedCount(newCount);
     if (newCount >= 2) {
-      const areaId = neglectedIds?.[0] ?? AREAS[Math.floor(Math.random() * AREAS.length)].id;
-      const text = getRandomAction(AREA_ACTIONS[areaId]);
-      setMomentumAreaId(areaId);
-      setMomentumText(text);
+      const ma = getMomentumAction(neglectedIds);
+      setMomentumText(ma.text);
       show(() => setPhase("momentum"));
     } else {
       setConfirmation(CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)]);
@@ -513,9 +544,8 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
         )}
         {phase === "momentum" && (
           <>
-            <p className="momentum-intro">you're moving.</p>
-            <p className="momentum-area">{AREAS.find(a => a.id === momentumAreaId)?.name}</p>
-            <p className="tendto-action">{momentumText}</p>
+            <p className="momentum-intro">you're moving. want to keep going?</p>
+            <p className="action-text">{momentumText}</p>
             <div className="action-btns">
               <button className="abtn abtn-done" onClick={commitMomentum}>i'll do this</button>
               <button className="abtn abtn-skip" onClick={keepSmall}>keep it small</button>
