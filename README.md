@@ -14,6 +14,8 @@ This is not a productivity app. There are no streaks, no overdue states, no back
 
 **Life Areas** walks through twelve domains of wellbeing one at a time — Physical, Relationships, Creativity, Purpose, and others. For each you choose: thriving, okay, neglected, or skip. The goal is to notice, not to fix. What you mark as neglected quietly shapes which Soft Reset suggestions you're more likely to see.
 
+**What Needs You** is for when you have some time and want to know where to put it. It picks one area that's been going hungry based on your check-in history and suggests something meaningful to do with the next thirty minutes or so. Not a micro-action — a real thing worth an hour. "Something else" cycles through different suggestions until one fits.
+
 ---
 
 ## Running locally
@@ -33,7 +35,7 @@ Everything lives in `unified-app.jsx`, organized in four sections:
 
 - **DATA** — Static constants: 12 life areas, micro-actions keyed by tier (1–4), area actions for the Tend To screen
 - **STORAGE** — `loadHistory` / `saveCheckin` via `localStorage`
-- **SCREENS** — Five self-contained components: `HomeScreen`, `SoftResetScreen`, `CheckinScreen`, `SummaryScreen`, `StatsScreen`, plus `TendToScreen`, `MyActionsScreen`, and `InfoScreen`
+- **SCREENS** — Self-contained components: `HomeScreen`, `SoftResetScreen`, `CheckinScreen`, `SummaryScreen`, `StatsScreen`, `TendToScreen`, `FreeTimeScreen`, `MyActionsScreen`, and `InfoScreen`
 - **APP** — `App` owns routing via a single `screen` state string and passes `neglectedIds` and `trends` as derived props
 
 The weighting logic in `getWeightedAction` gives higher weight to actions whose domains overlap with recently neglected life areas and the current time of day. This is invisible to the user by design.
