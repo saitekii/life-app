@@ -953,6 +953,19 @@ function InfoScreen({ onBack }) {
         </div>
 
         <div className="info-section">
+          <p className="section-label">what needs you</p>
+          <p className="info-p">
+            For when you have some time and want to know where to put it. The app picks one area of your life that's been going a little hungry and suggests something meaningful to do with the next thirty minutes or so.
+          </p>
+          <p className="info-p">
+            It draws from your check-in history to find what's been neglected — if you haven't checked in yet, it picks something at random. Either way, it gives you a real suggestion, not a micro-action. Something worth an hour.
+          </p>
+          <p className="info-p">
+            "Something else" cycles through different suggestions. If nothing fits, go back — it's not trying to corner you.
+          </p>
+        </div>
+
+        <div className="info-section">
           <p className="section-label">a note</p>
           <p className="info-p">
             Use this when it helps and ignore it when it doesn't. There's no correct frequency. Once a week, once a month, or just when you're stuck — all of those are fine.
