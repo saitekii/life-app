@@ -392,7 +392,7 @@ function dominantState(stats) {
 
 // ─── SCREENS ─────────────────────────────────────────────────────────────────
 
-function HomeScreen({ onSoftReset, onCheckin, onStats, onMyActions, onInfo, history, trends, isDark, onToggleTheme }) {
+function HomeScreen({ onSoftReset, onCheckin, onFreeTime, onStats, onMyActions, onInfo, history, trends, isDark, onToggleTheme }) {
   const lastCheckin = history[0];
   return (
     <div className="screen home-screen">
@@ -416,6 +416,11 @@ function HomeScreen({ onSoftReset, onCheckin, onStats, onMyActions, onInfo, hist
           <span className="door-eyebrow">check in</span>
           <span className="door-title">Life Areas</span>
           <span className="door-sub">see how everything<br/>is actually going</span>
+        </button>
+        <button className="door door-freetime" onClick={onFreeTime}>
+          <span className="door-eyebrow">i have some time</span>
+          <span className="door-title">What Needs You</span>
+          <span className="door-sub">one area of your life that could use your attention right now</span>
         </button>
       </div>
 
@@ -837,6 +842,71 @@ function StatsScreen({ onBack, history, onTendTo }) {
   );
 }
 
+function FreeTimeScreen({ onBack, onDone, neglectedIds }) {
+  const pickArea = (excludeId = null) => {
+    const pool = neglectedIds?.length
+      ? AREAS.filter(a => neglectedIds.includes(a.id) && a.id !== excludeId)
+      : [];
+    const candidates = pool.length ? pool : AREAS.filter(a => a.id !== excludeId);
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  };
+
+  const initialArea = pickArea();
+  const [area, setArea] = useState(initialArea);
+  const [action, setAction] = useState(() => getRandomAction(AREA_ACTIONS[initialArea.id]));
+  const [phase, setPhase] = useState("action");
+  const [visible, setVisible] = useState(true);
+  const lastAction = useRef(action);
+
+  const show = (fn) => {
+    setVisible(false);
+    setTimeout(() => { fn(); setVisible(true); }, 220);
+  };
+
+  const commit = () => show(() => setPhase("confirmed"));
+
+  const somethingElse = () => {
+    const actions = AREA_ACTIONS[area.id];
+    const next = getRandomAction(actions, lastAction.current);
+    if (next !== lastAction.current) {
+      lastAction.current = next;
+      show(() => setAction(next));
+    } else {
+      const nextArea = pickArea(area.id);
+      const nextAction = getRandomAction(AREA_ACTIONS[nextArea.id]);
+      lastAction.current = nextAction;
+      show(() => { setArea(nextArea); setAction(nextAction); });
+    }
+  };
+
+  return (
+    <div className="screen freetime-screen">
+      <button className="back-btn" onClick={onBack}>← back</button>
+      <div className={`freetime-center ${visible ? "vis" : ""}`}>
+        {phase === "action" && (
+          <>
+            <div className="freetime-area-label">
+              <span className="freetime-category">{area.category}</span>
+              <span className="freetime-name">{area.name}</span>
+            </div>
+            <p className="freetime-action">{action}</p>
+            <div className="action-btns">
+              <button className="abtn abtn-done" onClick={commit}>i'll do this</button>
+              <button className="abtn abtn-skip" onClick={somethingElse}>something else</button>
+            </div>
+          </>
+        )}
+        {phase === "confirmed" && (
+          <>
+            <p className="confirmation">go do it.</p>
+            <button className="abtn abtn-done" style={{maxWidth:"220px",width:"100%"}} onClick={onDone}>done</button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function InfoScreen({ onBack }) {
   return (
     <div className="screen info-screen">
@@ -1224,6 +1294,9 @@ export default function App() {
         .door-sub { font-size: 10px; color: var(--color-text-ui); line-height: 1.7; letter-spacing: 0.03em; }
         .door-reset:hover .door-title { color: var(--color-text-warm); }
         .door-checkin:hover .door-title { color: var(--color-state-thriving); }
+        .door-freetime { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.25rem 1.5rem; }
+        .door-freetime .door-sub { line-height: 1.6; flex: 1; text-align: right; }
+        .door-freetime:hover .door-title { color: var(--color-text-warm); }
 
         .stats-link { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 6px 0; margin-bottom: 1.5rem; transition: color 0.2s; font-weight: 300; }
         .stats-link:hover { color: var(--color-text-secondary); }
@@ -1423,6 +1496,15 @@ export default function App() {
         .import-textarea::placeholder { color: var(--color-text-faint); }
         .import-textarea:focus { border-color: var(--color-text-ui); }
 
+        /* FREE TIME */
+        .freetime-screen { justify-content: flex-start; padding: 0; position: relative; }
+        .freetime-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 2rem 4rem; width: 100%; max-width: 480px; margin: 0 auto; opacity: 0; transform: translateY(6px); transition: opacity 0.25s ease, transform 0.25s ease; }
+        .freetime-center.vis { opacity: 1; transform: translateY(0); }
+        .freetime-area-label { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 2rem; }
+        .freetime-category { font-size: 9px; letter-spacing: 0.2em; color: var(--color-text-label); text-transform: uppercase; }
+        .freetime-name { font-family: 'Instrument Serif', serif; font-size: clamp(22px, 4.5vw, 30px); color: var(--color-text-warm); }
+        .freetime-action { font-family: 'Instrument Serif', serif; font-size: clamp(18px, 3.5vw, 24px); color: var(--color-text-primary); text-align: center; line-height: 1.6; margin-bottom: 2.5rem; }
+
         /* INFO */
         .info-screen { justify-content: flex-start; padding: 0; }
         .info-inner { width: 100%; max-width: 520px; padding: 2rem 2rem 4rem; margin: 0 auto; }
@@ -1438,6 +1520,7 @@ export default function App() {
           <HomeScreen
             onSoftReset={() => setScreen("reset")}
             onCheckin={() => setScreen("checkin")}
+            onFreeTime={() => setScreen("freetime")}
             onStats={() => setScreen("stats")}
             onMyActions={() => setScreen("myactions")}
             onInfo={() => setScreen("info")}
@@ -1484,6 +1567,13 @@ export default function App() {
             onAdd={handleAddCustomAction}
             onImport={handleImportCustomActions}
             onDelete={handleDeleteCustomAction}
+          />
+        )}
+        {screen === "freetime" && (
+          <FreeTimeScreen
+            onBack={() => setScreen("home")}
+            onDone={() => setScreen("home")}
+            neglectedIds={neglectedIds}
           />
         )}
         {screen === "info" && (
