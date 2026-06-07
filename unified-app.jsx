@@ -100,6 +100,8 @@ const ACTIONS = {
     { text: "notice the temperature of the air around you", domains: ["physical","learning"] },
     { text: "let your face go soft",                domains: ["physical","autonomy"] },
     { text: "count slowly from one to ten",         domains: ["physical","autonomy"] },
+    { text: "let what isn't yours stay where it is", domains: ["autonomy","stability"] },
+    { text: "notice what's actually in your hands right now", domains: ["autonomy","physical"] },
   ],
 };
 
@@ -190,7 +192,7 @@ const AREA_ACTIONS = {
   ],
 };
 
-const CONFIRMATIONS = ["good.","that counts.","that's enough.","you moved.","okay.","done.","that's real."];
+const CONFIRMATIONS = ["good.","that counts.","that's enough.","you moved.","okay.","done.","that's real.","you met it.","that was yours to give.","you couldn't have been anywhere but here."];
 
 const MOMENTUM_ACTIONS = [
   { text: "spend five minutes tidying one spot in your space",            domains: ["stability", "physical"] },
