@@ -1177,10 +1177,10 @@ export default function App() {
           --color-text-primary: #e8e3db;
           --color-text-warm: #c8bfb0;
           --color-text-secondary: #b0b0a4;
-          --color-text-body: #9a9a90;
-          --color-text-ui: #8a8a80;
-          --color-text-label: #7a7a72;
-          --color-text-faint: #555550;
+          --color-text-body: #acaca2;
+          --color-text-ui: #9e9e94;
+          --color-text-label: #929288;
+          --color-text-faint: #787874;
           --color-state-thriving: #7aaa6a;
           --color-state-neglected: #c07060;
           --color-state-thriving-hover: #a0c898;
@@ -1194,10 +1194,10 @@ export default function App() {
           --color-cell-neglected-text: #8a5040;
           --color-cell-okay-bg: #161614;
           --color-cell-okay-border: #2e2e2a;
-          --color-cell-okay-text: #5a5a52;
+          --color-cell-okay-text: #888880;
           --color-cell-none-bg: #0f0f0d;
           --color-cell-none-border: #1a1a18;
-          --color-cell-none-text: #3a3a36;
+          --color-cell-none-text: #787874;
         }
         @media (prefers-color-scheme: light) {
           :root:not(.theme-dark) {
@@ -1283,6 +1283,7 @@ export default function App() {
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--color-bg); }
+        :focus-visible { outline: 1px solid var(--color-text-secondary); outline-offset: 3px; border-radius: 2px; }
 
         .app { min-height: 100vh; background: var(--color-bg); color: var(--color-text-primary); font-family: 'Geist Mono', monospace; font-weight: 400; }
         .loading-screen { min-height: 100vh; background: var(--color-bg); display: flex; align-items: center; justify-content: center; }
@@ -1304,6 +1305,7 @@ export default function App() {
         .doors { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 480px; margin-bottom: 1.25rem; }
         .door { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 1.5rem; background: none; border: 1px solid var(--color-border-ui); border-radius: 4px; cursor: pointer; text-align: left; transition: border-color 0.2s, background 0.2s; }
         .door:hover { border-color: var(--color-text-ui); background: var(--color-bg-raised); }
+        .door:active { opacity: 0.8; }
         .door-eyebrow { font-size: 10px; letter-spacing: 0.18em; color: var(--color-text-label); text-transform: uppercase; }
         .door-title { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--color-text-primary); line-height: 1.2; }
         .door-sub { font-size: 12px; color: var(--color-text-ui); line-height: 1.7; letter-spacing: 0.03em; }
@@ -1313,7 +1315,7 @@ export default function App() {
         .door-freetime .door-sub { line-height: 1.6; flex: 1; text-align: right; }
         .door-freetime:hover .door-title { color: var(--color-text-warm); }
 
-        .stats-link { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 6px 0; margin-bottom: 1.5rem; transition: color 0.2s; font-weight: 300; }
+        .stats-link { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 10px 0; margin-bottom: 1rem; transition: color 0.2s; font-weight: 300; }
         .stats-link:hover { color: var(--color-text-secondary); }
 
         .trends { width: 100%; max-width: 480px; border-top: 1px solid var(--color-border-section); padding-top: 1.5rem; }
@@ -1331,7 +1333,7 @@ export default function App() {
 
         /* SOFT RESET */
         .reset-screen { justify-content: center; padding: 2rem; position: relative; }
-        .back-btn { position: absolute; top: 1.5rem; left: 1.75rem; font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 4px 0; transition: color 0.2s; font-weight: 300; }
+        .back-btn { position: absolute; top: 1.5rem; left: 1.75rem; font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 12px 0; transition: color 0.2s; font-weight: 300; }
         .back-btn:hover { color: var(--color-text-secondary); }
         .reset-center { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; opacity: 0; transform: translateY(6px); transition: opacity 0.25s ease, transform 0.25s ease; }
         .reset-center.vis { opacity: 1; transform: translateY(0); }
@@ -1348,10 +1350,11 @@ export default function App() {
         .abtn-done:hover { border-color: var(--color-text-ui); color: var(--color-text-primary); background: var(--color-bg-raised); }
         .abtn-skip { background: none; border: 1px solid transparent; color: var(--color-text-label); }
         .abtn-skip:hover { color: var(--color-text-secondary); border-color: var(--color-border-strong); }
+        .abtn:active { opacity: 0.7; transform: scale(0.98); }
         .confirmation { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 38px; color: var(--color-text-ui); text-align: center; margin-bottom: 2rem; }
         .momentum-intro { font-size: 12px; letter-spacing: 0.1em; color: var(--color-text-label); margin-bottom: 0.75rem; text-align: center; }
         .momentum-area  { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 15px; color: var(--color-text-warm); margin-bottom: 1.75rem; text-align: center; }
-        .text-btn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.12em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 8px 0; transition: color 0.2s; }
+        .text-btn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.12em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 12px 0; transition: color 0.2s; }
         .text-btn:hover { color: var(--color-text-secondary); }
 
         /* CHECK-IN */
@@ -1372,6 +1375,7 @@ export default function App() {
         .rbtn-thriving:hover  { border-color: var(--color-border-state-thriving); color: var(--color-state-thriving-hover); background: var(--color-bg-state-thriving); }
         .rbtn-okay:hover      { border-color: var(--color-border-state-okay); color: var(--color-state-okay-hover); background: var(--color-bg-raised); }
         .rbtn-neglected:hover { border-color: var(--color-border-state-neglected); color: var(--color-state-neglected-hover); background: var(--color-bg-state-neglected); }
+        .rbtn:active { opacity: 0.7; transform: scale(0.97); }
         .skip-btn { margin-top: 0.5rem; }
 
         /* SUMMARY */
@@ -1391,7 +1395,7 @@ export default function App() {
         .s-neglected { color: var(--color-state-neglected); }
         .s-skip      { color: var(--color-text-faint); }
         .sum-bridge { padding: 2rem 0 0; }
-        .sum-bridge-btn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 300; letter-spacing: 0.12em; color: var(--color-text-ui); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; }
+        .sum-bridge-btn { font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 400; letter-spacing: 0.12em; color: var(--color-text-ui); background: none; border: none; cursor: pointer; padding: 10px 0; transition: color 0.2s; }
         .sum-bridge-btn:hover { color: var(--color-text-warm); }
         .sum-actions { display: flex; gap: 12px; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--color-border-section); }
 
