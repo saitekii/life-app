@@ -1157,8 +1157,6 @@ export default function App() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400&display=swap');
-
         /* ── THEME TOKENS ─────────────────────────────────────── */
         :root, :root.theme-dark {
           --color-bg: #0c0c0b;
