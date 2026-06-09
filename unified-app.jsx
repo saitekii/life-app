@@ -1311,8 +1311,7 @@ export default function App() {
         .door-sub { font-size: 12px; color: var(--color-text-ui); line-height: 1.7; letter-spacing: 0.03em; }
         .door-reset:hover .door-title { color: var(--color-text-warm); }
         .door-checkin:hover .door-title { color: var(--color-state-thriving); }
-        .door-freetime { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.25rem 1.5rem; }
-        .door-freetime .door-sub { line-height: 1.6; flex: 1; text-align: right; }
+        .door-freetime { grid-column: 1 / -1; }
         .door-freetime:hover .door-title { color: var(--color-text-warm); }
 
         .stats-link { font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--color-text-label); background: none; border: none; cursor: pointer; padding: 10px 0; margin-bottom: 1rem; transition: color 0.2s; font-weight: 300; }
