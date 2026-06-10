@@ -110,17 +110,17 @@ const ACTIONS = {
   4: [
     { text: "sit still for a moment",             domains: ["physical","autonomy"] },
     { text: "notice three things in the room",    domains: ["learning","physical"] },
-    { text: "feel your feet on the ground",       domains: ["physical","stability"] },
-    { text: "take one breath",                    domains: ["physical","autonomy"] },
-    { text: "let your shoulders drop",            domains: ["physical","stability"] },
+    { text: "feel your feet on the ground",       domains: ["physical","stability"],  guided: ["find your feet.", "feel the floor beneath them."] },
+    { text: "take one breath",                    domains: ["physical","autonomy"],   guided: ["breathe in...", "...breathe out."], guidedMs: 4000 },
+    { text: "let your shoulders drop",            domains: ["physical","stability"],  guided: ["feel your shoulders.", "let them fall."] },
     { text: "just be here",                       domains: ["autonomy","purpose"] },
-    { text: "let your jaw unclench",              domains: ["physical","autonomy"] },
+    { text: "let your jaw unclench",              domains: ["physical","autonomy"],   guided: ["notice your jaw.", "let it soften."] },
     { text: "close one open tab or app",          domains: ["stability","autonomy"] },
     { text: "give yourself credit for being here", domains: ["recognition","autonomy"] },
-    { text: "rest your hands in your lap",          domains: ["physical","autonomy"] },
+    { text: "rest your hands in your lap",          domains: ["physical","autonomy"],  guided: ["find your hands.", "let them rest."] },
     { text: "notice the temperature of the air around you", domains: ["physical","learning"] },
-    { text: "let your face go soft",                domains: ["physical","autonomy"] },
-    { text: "count slowly from one to ten",         domains: ["physical","autonomy"] },
+    { text: "let your face go soft",                domains: ["physical","autonomy"],  guided: ["notice your face.", "let it soften."] },
+    { text: "count slowly from one to ten",         domains: ["physical","autonomy"],  guided: ["one... two... three...", "four... five... six...", "seven... eight... nine... ten."], guidedMs: 3000 },
     { text: "let what isn't yours stay where it is", domains: ["autonomy","stability"] },
     { text: "notice what's actually in your hands right now", domains: ["autonomy","physical"] },
   ],
@@ -505,17 +505,27 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
   const [completedCount, setCompletedCount] = useState(0);
   const [momentumText, setMomentumText] = useState(null);
   const [visible, setVisible] = useState(true);
+  const [guidedStep, setGuidedStep] = useState(-1);
   const lastText = useRef(null);
+
+  useEffect(() => {
+    if (!action?.guided || guidedStep < 0 || guidedStep >= action.guided.length) return;
+    const ms = action.guidedMs ?? 3500;
+    const t = setTimeout(() => setGuidedStep(s => s + 1), ms);
+    return () => clearTimeout(t);
+  }, [guidedStep, action]);
 
   const show = (fn) => {
     setVisible(false);
     setTimeout(() => { fn(); setVisible(true); }, 220);
   };
 
+  const startGuided = (a) => { if (a?.guided) setGuidedStep(0); else setGuidedStep(-1); };
+
   const start = () => {
     const a = getWeightedAction(1, neglectedIds, null, customActions);
     lastText.current = a.text;
-    show(() => { setTier(1); setAction(a); setPhase("action"); });
+    show(() => { setTier(1); setAction(a); setPhase("action"); startGuided(a); });
   };
   const done = () => {
     const newCount = completedCount + 1;
@@ -533,13 +543,13 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
     const next = Math.min(tier + 1, 4);
     const a = getWeightedAction(next, neglectedIds, lastText.current, customActions);
     lastText.current = a.text;
-    show(() => { setTier(next); setAction(a); });
+    show(() => { setTier(next); setAction(a); startGuided(a); });
   };
-  const reset = () => show(() => { setPhase("idle"); setTier(1); setAction(null); });
+  const reset = () => show(() => { setPhase("idle"); setTier(1); setAction(null); setGuidedStep(-1); });
   const commitMomentum = () => show(() => setPhase("momentum-confirmed"));
   const keepSmall = () => {
     setCompletedCount(0);
-    show(() => { setPhase("idle"); setTier(1); setAction(null); });
+    show(() => { setPhase("idle"); setTier(1); setAction(null); setGuidedStep(-1); });
   };
 
   return (
@@ -557,11 +567,20 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
             <div className="tier-dots">
               {[1,2,3,4].map(t => <div key={t} className={`tdot ${t === tier ? "on" : ""}`} />)}
             </div>
-            <p className="action-text">{action?.text}</p>
-            <div className="action-btns">
-              <button className="abtn abtn-done" onClick={done}>done</button>
-              <button className="abtn abtn-skip" onClick={notThis}>not this one</button>
-            </div>
+            {action?.guided && guidedStep >= 0 && guidedStep < action.guided.length ? (
+              <>
+                <p className="action-text">{action.guided[guidedStep]}</p>
+                <button className="abtn abtn-skip guided-escape" onClick={notThis}>not this one</button>
+              </>
+            ) : (
+              <>
+                <p className="action-text">{action?.text}</p>
+                <div className="action-btns">
+                  <button className="abtn abtn-done" onClick={done}>done</button>
+                  <button className="abtn abtn-skip" onClick={notThis}>not this one</button>
+                </div>
+              </>
+            )}
           </>
         )}
         {phase === "done" && (
