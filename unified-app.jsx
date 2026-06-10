@@ -930,7 +930,48 @@ function FreeTimeScreen({ onBack, onDone, neglectedIds }) {
   );
 }
 
-function InfoScreen({ onBack }) {
+const AREA_DESCRIPTIONS = {
+  physical:      "Your body is the substrate everything else runs on. Sleep, food, movement, and rest aren't nice-to-haves — they're the conditions under which everything else becomes possible or impossible. When this area is thin, almost everything else quietly gets harder.",
+  stability:     "The structures that provide ground under your feet: housing, finances, routines, the boundaries you hold with others. Stability isn't about rigidity — it's about having enough predictability that you don't have to spend all your energy on basic uncertainty.",
+  autonomy:      "Whether your life actually reflects your own priorities, values, and choices — not just what you're supposed to want. Time that feels like yours. The ability to say no, to do things your way, to live in accordance with what you actually believe. When this area is neglected, a quiet sense of wrongness tends to follow.",
+  relationships: "The people in your life and the actual contact you have with them. Not just their existence in the background, but showing up, being shown up for, making plans and keeping them. Relationships require maintenance that's easy to defer indefinitely.",
+  intimacy:      "Feeling genuinely known, not just liked. The conversations that go somewhere real. The people you can be honest with about what's actually going on. This is distinct from having relationships — you can be surrounded by people and still have none of it.",
+  recognition:   "Feeling that what you do and who you are is seen and valued. This includes how others acknowledge you, but also how you acknowledge yourself. Chronic underrecognition — of your effort, your contributions, your presence — erodes things quietly over time.",
+  learning:      "Ideas, questions, art, the pleasure of understanding something you didn't before. The part of you that wants to be surprised, to discover things, to follow a thread somewhere interesting. When this area goes quiet, life can start to feel flat in a way that's hard to name.",
+  mastery:       "Developing real skill over time through sustained effort. The satisfaction of getting better at something that matters to you — not just doing it, but growing in your ability to do it well. Mastery requires a kind of practice that's distinct from mere repetition.",
+  purpose:       "The sense that what you do connects to something beyond yourself — that your effort contributes to something, helps someone, builds something that matters. Hard to manufacture, hard to sustain artificially, but hard to feel whole without.",
+  play:          "The parts of life that have no productive justification. Games, humor, silliness, physical play, goofing around for its own sake. Not everything needs to serve a purpose. When play disappears from a life, something important has gone missing even if it's hard to name.",
+  creativity:    "Making things — music, writing, drawing, cooking, building, anything where you produce something that didn't exist before. This is distinct from consuming things, even things you love deeply. The act of making has a particular quality that receiving doesn't.",
+  hope:          "Having a horizon. Plans, goals, things to look forward to — not optimism exactly, but the sense of moving toward something. When this area is thin, the present can start to feel heavier than it needs to.",
+};
+
+function AreasScreen({ onBack }) {
+  return (
+    <div className="screen info-screen">
+      <div className="info-inner">
+        <div className="stats-header">
+          <button className="back-btn-inline" onClick={onBack}>← back</button>
+          <h2 className="stats-title">the life areas</h2>
+          <p className="stats-sub">twelve domains, one at a time</p>
+        </div>
+        {CATEGORY_ORDER.map(cat => (
+          <div key={cat} className="info-section">
+            <p className="section-label">{cat}</p>
+            {AREAS.filter(a => a.category === cat).map(a => (
+              <div key={a.id} className="area-entry">
+                <p className="area-name">{a.name}</p>
+                <p className="area-hint">{a.hint}</p>
+                <p className="area-desc">{AREA_DESCRIPTIONS[a.id]}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function InfoScreen({ onBack, onAreas }) {
   return (
     <div className="screen info-screen">
       <div className="info-inner">
@@ -973,6 +1014,7 @@ function InfoScreen({ onBack }) {
           <p className="info-p">
             What you mark as neglected gently shapes which Soft Reset suggestions you're more likely to see. This happens in the background — you don't need to think about it.
           </p>
+          <button className="info-link-btn" onClick={onAreas}>see all twelve areas →</button>
         </div>
 
         <div className="info-section">
@@ -1239,7 +1281,10 @@ export default function App() {
           />
         )}
         {screen === "info" && (
-          <InfoScreen onBack={() => setScreen("home")} />
+          <InfoScreen onBack={() => setScreen("home")} onAreas={() => setScreen("areas")} />
+        )}
+        {screen === "areas" && (
+          <AreasScreen onBack={() => setScreen("info")} />
         )}
     </div>
   );
