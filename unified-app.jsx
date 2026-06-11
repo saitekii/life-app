@@ -22,107 +22,87 @@ const CATEGORY_ORDER = ["Foundations","Connection","Growth","Meaning","Joy & Vit
 
 const ACTIONS = {
   1: [
-    { text: "stand up",                           domains: ["physical"] },
-    { text: "sit somewhere else",                 domains: ["physical","stability"] },
-    { text: "open a window",                      domains: ["physical","play"] },
-    { text: "change the lighting",                domains: ["physical","creativity"] },
-    { text: "step outside",                       domains: ["physical","hope"] },
-    { text: "move to another room",               domains: ["physical","stability"] },
-    { text: "sit by a window",                    domains: ["physical","learning"] },
-    { text: "lie down flat for a moment",         domains: ["physical"] },
-    { text: "put your phone in another room",     domains: ["autonomy","stability"] },
-    { text: "look at something far away",         domains: ["physical","learning"] },
-    { text: "notice how your body feels right now", domains: ["physical","autonomy"] },
-    { text: "make your bed",                         domains: ["stability"] },
-    { text: "light a candle",                        domains: ["creativity","stability"] },
-    { text: "clear the surface in front of you",     domains: ["stability","autonomy"] },
-    { text: "change what you're wearing",            domains: ["autonomy","physical"] },
-    { text: "put something away that's been sitting out", domains: ["stability"] },
+    { id: 101, text: "stand up",                           domains: ["physical"] },
+    { id: 102, text: "sit somewhere else",                 domains: ["physical","stability"] },
+    { id: 103, text: "open a window",                      domains: ["physical","play"] },
+    { id: 104, text: "change the lighting",                domains: ["physical","creativity"] },
+    { id: 105, text: "step outside",                       domains: ["physical","hope"] },
+    { id: 106, text: "move to another room",               domains: ["physical","stability"] },
+    { id: 107, text: "sit by a window",                    domains: ["physical","learning"] },
+    { id: 108, text: "lie down flat for a moment",         domains: ["physical"] },
+    { id: 109, text: "put your phone in another room",     domains: ["autonomy","stability"] },
+    { id: 110, text: "look at something far away",         domains: ["physical","learning"] },
+    { id: 111, text: "notice how your body feels right now", domains: ["physical","autonomy"] },
+    { id: 112, text: "make your bed",                         domains: ["stability"] },
+    { id: 113, text: "light a candle",                        domains: ["creativity","stability"] },
+    { id: 114, text: "clear the surface in front of you",     domains: ["stability","autonomy"] },
+    { id: 115, text: "change what you're wearing",            domains: ["autonomy","physical"] },
+    { id: 116, text: "put something away that's been sitting out", domains: ["stability"] },
   ],
   2: [
-    { text: "drink some water",                          domains: ["physical"] },
-    { text: "stretch your arms overhead",                domains: ["physical","mastery"] },
-    { text: "wash your face",                            domains: ["physical","stability"] },
-    { text: "put your shoes on",                         domains: ["physical","hope"] },
-    { text: "breathe slowly for ten seconds",            domains: ["physical","autonomy"] },
-    { text: "roll your shoulders back",                  domains: ["physical","mastery"] },
-    { text: "put something warm in your hands",          domains: ["physical","intimacy"] },
-    { text: "text someone you haven't talked to in a while", domains: ["relationships","intimacy"] },
-    { text: "eat something small",                       domains: ["physical"] },
-    { text: "name one thing you did right today",        domains: ["recognition","autonomy"] },
-    { text: "say something kind to yourself, out loud",  domains: ["recognition","intimacy"] },
-    { text: "close your eyes for thirty seconds",        domains: ["physical","autonomy"] },
-    { text: "make a warm drink",                         domains: ["physical","play"] },
-    { text: "shake out your hands and arms",             domains: ["physical"] },
-    { text: "take your medication if you haven't yet",   domains: ["physical","stability"] },
-    { text: "put lotion on your hands",                  domains: ["physical","intimacy"] },
-    { text: "stand and look out a window for one minute", domains: ["physical","hope"] },
-    { text: "finish the sentence 'what I actually want is...'",             domains: ["autonomy","hope"] },
-    { text: "write one sentence about what matters most to you right now",  domains: ["autonomy","purpose"] },
-    { text: "finish the sentence 'the kind of person I want to be would...'", domains: ["autonomy","purpose"] },
-    { text: "write one thing you keep thinking about but haven't acted on", domains: ["autonomy","purpose"] },
-    { text: "write one thing you believe that most people around you don't", domains: ["autonomy","learning"] },
-    { text: "ask yourself what you would regret not doing",                 domains: ["autonomy","hope","purpose"] },
-    { text: "name one thing in your life that still feels unresolved",      domains: ["autonomy","stability"] },
-    { text: "write one thing you owe yourself",                             domains: ["autonomy","recognition"] },
+    { id: 201, text: "drink some water",                          domains: ["physical"] },
+    { id: 202, text: "stretch your arms overhead",                domains: ["physical","mastery"] },
+    { id: 203, text: "wash your face",                            domains: ["physical","stability"] },
+    { id: 204, text: "put your shoes on",                         domains: ["physical","hope"] },
+    { id: 205, text: "breathe slowly for ten seconds",            domains: ["physical","autonomy"] },
+    { id: 206, text: "roll your shoulders back",                  domains: ["physical","mastery"] },
+    { id: 207, text: "put something warm in your hands",          domains: ["physical","intimacy"] },
+    { id: 208, text: "text someone you haven't talked to in a while", domains: ["relationships","intimacy"] },
+    { id: 209, text: "eat something small",                       domains: ["physical"] },
+    { id: 210, text: "name one thing you did right today",        domains: ["recognition","autonomy"] },
+    { id: 211, text: "say something kind to yourself, out loud",  domains: ["recognition","intimacy"] },
+    { id: 212, text: "close your eyes for thirty seconds",        domains: ["physical","autonomy"] },
+    { id: 213, text: "make a warm drink",                         domains: ["physical","play"] },
+    { id: 214, text: "shake out your hands and arms",             domains: ["physical"] },
+    { id: 215, text: "take your medication if you haven't yet",   domains: ["physical","stability"] },
+    { id: 216, text: "put lotion on your hands",                  domains: ["physical","intimacy"] },
+    { id: 217, text: "stand and look out a window for one minute", domains: ["physical","hope"] },
   ],
   3: [
-    { text: "send one message to someone",                  domains: ["relationships","intimacy"] },
-    { text: "open something you've been meaning to read",   domains: ["learning"] },
-    { text: "put your phone face down",                     domains: ["autonomy","stability"] },
-    { text: "write one sentence",                           domains: ["creativity","mastery"] },
-    { text: "look out a window for a moment",               domains: ["learning","hope"] },
-    { text: "pick up something you've left unfinished",     domains: ["mastery","purpose"] },
-    { text: "play one song you love",                       domains: ["play","creativity","hope"] },
-    { text: "do one small thing for future you",            domains: ["hope","purpose","stability"] },
-    { text: "send a voice note instead of typing",          domains: ["relationships","intimacy"] },
-    { text: "notice one thing you made or did this week",   domains: ["recognition","mastery"] },
-    { text: "find a video of something you love",           domains: ["play","learning"] },
-    { text: "write down one thing you want to remember",    domains: ["hope","learning"] },
-    { text: "open a project you care about, just to look",  domains: ["purpose","creativity"] },
-    { text: "tell someone one thing you appreciate about them", domains: ["relationships","recognition"] },
-    { text: "put on music that matches how you feel",       domains: ["creativity","intimacy"] },
-    { text: "pull up something creative you made",          domains: ["recognition","creativity"] },
-    { text: "let yourself want something without guilt",    domains: ["autonomy","hope"] },
-    { text: "cancel something you don't actually want to do", domains: ["autonomy","stability"] },
-    { text: "make a small plan for tomorrow",               domains: ["hope","stability"] },
-    { text: "reply to one message you've been putting off", domains: ["relationships","stability"] },
-    { text: "doodle something for two minutes, no goal",    domains: ["creativity","play"] },
-    { text: "name three things that went okay today",       domains: ["recognition","hope"] },
-    { text: "add one thing to a list you've been avoiding", domains: ["stability","mastery"] },
-    { text: "hum or sing something to yourself",            domains: ["creativity","play"] },
-    { text: "set a timer for ten minutes and start one thing", domains: ["mastery","purpose"] },
-    { text: "text someone you've been thinking about",      domains: ["relationships","intimacy"] },
-    { text: "read one page of something",                   domains: ["learning"] },
-    { text: "write about one value you hold and whether your recent actions reflect it", domains: ["autonomy","purpose"] },
-    { text: "write about what 'doing the right thing' looks like in something you're facing", domains: ["autonomy","purpose"] },
-    { text: "write about what you actually want — not what you think you should want", domains: ["autonomy","hope"] },
-    { text: "write about what kind of contribution you want to make, to anything", domains: ["purpose","hope"] },
-    { text: "reflect on one thing you did recently and ask if it was true to who you are", domains: ["autonomy","purpose"] },
-    { text: "write about something you believe is worth doing even if no one notices", domains: ["purpose","autonomy"] },
-    { text: "write about one thing you've been avoiding deciding",          domains: ["autonomy","stability"] },
-    { text: "ask honestly whether what you're spending time on matches what you care about", domains: ["autonomy","purpose"] },
-    { text: "write about what your beliefs ask of you in something you're facing right now", domains: ["autonomy","purpose","learning"] },
-    { text: "write about what you're building toward, even if you're not sure how", domains: ["purpose","hope"] },
-    { text: "write about an obligation you feel and whether you actually believe in it", domains: ["autonomy","purpose"] },
-    { text: "write for five minutes about what you want your life to look like in a year", domains: ["hope","autonomy","purpose"] },
+    { id: 301, text: "send one message to someone",                  domains: ["relationships","intimacy"],   guided: ["open your messages.", "pick one person.", "write anything."] },
+    { id: 302, text: "open something you've been meaning to read",   domains: ["learning"],                   guided: ["find it.", "open it."] },
+    { id: 303, text: "put your phone face down",                     domains: ["autonomy","stability"] },
+    { id: 304, text: "write one sentence",                           domains: ["creativity","mastery"] },
+    { id: 305, text: "look out a window for a moment",               domains: ["learning","hope"] },
+    { id: 306, text: "pick up something you've left unfinished",     domains: ["mastery","purpose"] },
+    { id: 307, text: "play one song you love",                       domains: ["play","creativity","hope"],   guided: ["open your music.", "pick one song.", "press play."] },
+    { id: 308, text: "do one small thing for future you",            domains: ["hope","purpose","stability"] },
+    { id: 309, text: "send a voice note instead of typing",          domains: ["relationships","intimacy"],   guided: ["open your messages.", "find someone.", "press record."] },
+    { id: 310, text: "notice one thing you made or did this week",   domains: ["recognition","mastery"] },
+    { id: 311, text: "find a video of something you love",           domains: ["play","learning"] },
+    { id: 312, text: "write down one thing you want to remember",    domains: ["hope","learning"] },
+    { id: 313, text: "open a project you care about, just to look",  domains: ["purpose","creativity"],       guided: ["find it.", "open it.", "just look."] },
+    { id: 314, text: "tell someone one thing you appreciate about them", domains: ["relationships","recognition"], guided: ["open your messages.", "pick someone.", "tell them."] },
+    { id: 315, text: "put on music that matches how you feel",       domains: ["creativity","intimacy"],      guided: ["open your music.", "pick something.", "press play."] },
+    { id: 316, text: "pull up something creative you made",          domains: ["recognition","creativity"],   guided: ["find it.", "open it."] },
+    { id: 317, text: "let yourself want something without guilt",    domains: ["autonomy","hope"] },
+    { id: 318, text: "cancel something you don't actually want to do", domains: ["autonomy","stability"] },
+    { id: 319, text: "make a small plan for tomorrow",               domains: ["hope","stability"] },
+    { id: 320, text: "reply to one message you've been putting off", domains: ["relationships","stability"],  guided: ["open your messages.", "find it.", "write anything."] },
+    { id: 321, text: "doodle something for two minutes, no goal",    domains: ["creativity","play"],          guided: ["find something to draw on.", "pick up a pen.", "start anywhere."] },
+    { id: 322, text: "name three things that went okay today",       domains: ["recognition","hope"] },
+    { id: 323, text: "add one thing to a list you've been avoiding", domains: ["stability","mastery"],        guided: ["open the list.", "add one thing."] },
+    { id: 324, text: "hum or sing something to yourself",            domains: ["creativity","play"],          guided: ["close your eyes.", "hum anything."] },
+    { id: 325, text: "set a timer for ten minutes and start one thing", domains: ["mastery","purpose"] },
+    { id: 326, text: "text someone you've been thinking about",      domains: ["relationships","intimacy"],   guided: ["open your messages.", "type their name.", "send anything."] },
+    { id: 327, text: "read one page of something",                   domains: ["learning"],                   guided: ["find what you want to read.", "open it."] },
   ],
   4: [
-    { text: "sit still for a moment",             domains: ["physical","autonomy"] },
-    { text: "notice three things in the room",    domains: ["learning","physical"] },
-    { text: "feel your feet on the ground",       domains: ["physical","stability"],  guided: ["find your feet.", "feel the floor beneath them."] },
-    { text: "take one breath",                    domains: ["physical","autonomy"],   guided: ["breathe in...", "...breathe out."], guidedMs: 4000 },
-    { text: "let your shoulders drop",            domains: ["physical","stability"],  guided: ["feel your shoulders.", "let them fall."] },
-    { text: "just be here",                       domains: ["autonomy","purpose"] },
-    { text: "let your jaw unclench",              domains: ["physical","autonomy"],   guided: ["notice your jaw.", "let it soften."] },
-    { text: "close one open tab or app",          domains: ["stability","autonomy"] },
-    { text: "give yourself credit for being here", domains: ["recognition","autonomy"] },
-    { text: "rest your hands in your lap",          domains: ["physical","autonomy"],  guided: ["find your hands.", "let them rest."] },
-    { text: "notice the temperature of the air around you", domains: ["physical","learning"] },
-    { text: "let your face go soft",                domains: ["physical","autonomy"],  guided: ["notice your face.", "let it soften."] },
-    { text: "count slowly from one to ten",         domains: ["physical","autonomy"],  guided: ["one... two... three...", "four... five... six...", "seven... eight... nine... ten."], guidedMs: 3000 },
-    { text: "let what isn't yours stay where it is", domains: ["autonomy","stability"] },
-    { text: "notice what's actually in your hands right now", domains: ["autonomy","physical"] },
+    { id: 401, text: "sit still for a moment",             domains: ["physical","autonomy"],  guided: ["feel where you're sitting.", "let your weight settle."] },
+    { id: 402, text: "notice three things in the room",    domains: ["learning","physical"],   guided: ["look slowly around you.", "notice three things."] },
+    { id: 403, text: "feel your feet on the ground",       domains: ["physical","stability"],  guided: ["find your feet.", "feel the floor beneath them."] },
+    { id: 404, text: "take one breath",                    domains: ["physical","autonomy"],   guided: ["breathe in...", "...breathe out."], guidedMs: 4000 },
+    { id: 405, text: "let your shoulders drop",            domains: ["physical","stability"],  guided: ["feel your shoulders.", "let them fall."] },
+    { id: 406, text: "just be here",                       domains: ["autonomy","purpose"],    guided: ["feel the air.", "here."] },
+    { id: 407, text: "let your jaw unclench",              domains: ["physical","autonomy"],   guided: ["notice your jaw.", "let it soften."] },
+    { id: 408, text: "close one open tab or app",          domains: ["stability","autonomy"],  guided: ["look at what's open.", "close one."] },
+    { id: 409, text: "give yourself credit for being here", domains: ["recognition","autonomy"], guided: ["take a breath.", "you're here."] },
+    { id: 410, text: "rest your hands in your lap",          domains: ["physical","autonomy"],  guided: ["find your hands.", "let them rest."] },
+    { id: 411, text: "notice the temperature of the air around you", domains: ["physical","learning"], guided: ["breathe in slowly.", "feel the air on your face."] },
+    { id: 412, text: "let your face go soft",                domains: ["physical","autonomy"],  guided: ["notice your face.", "let it soften."] },
+    { id: 413, text: "count slowly from one to ten",         domains: ["physical","autonomy"],  guided: ["one... two... three...", "four... five... six...", "seven... eight... nine... ten."], guidedMs: 3000 },
+    { id: 414, text: "let what isn't yours stay where it is", domains: ["autonomy","stability"], guided: ["relax your grip.", "breathe out."] },
+    { id: 415, text: "notice what's actually in your hands right now", domains: ["autonomy","physical"], guided: ["look at your hands.", "feel what's there."] },
   ],
 };
 
@@ -215,26 +195,6 @@ const AREA_ACTIONS = {
 
 const CONFIRMATIONS = ["good.","that counts.","that's enough.","you moved.","okay.","done.","that's real.","you met it.","that was yours to give.","you couldn't have been anywhere but here."];
 
-const MOMENTUM_ACTIONS = [
-  { text: "spend five minutes tidying one spot in your space",            domains: ["stability", "physical"] },
-  { text: "write a few sentences about something on your mind",           domains: ["creativity", "autonomy", "intimacy"] },
-  { text: "make a short honest list of what's actually on your plate",    domains: ["stability", "autonomy"] },
-  { text: "text or message someone you've been meaning to reach",         domains: ["relationships", "intimacy"] },
-  { text: "make yourself something to eat",                               domains: ["physical"] },
-  { text: "do five minutes of movement — stretch, walk, shake it out",    domains: ["physical", "play"] },
-  { text: "read a few pages of something",                                domains: ["learning"] },
-  { text: "spend five minutes on something creative, no goal",            domains: ["creativity", "play"] },
-  { text: "open one thing you've been avoiding, just to look at it",      domains: ["mastery", "stability"] },
-  { text: "write down a few things you want to do this week",             domains: ["hope", "autonomy"] },
-  { text: "do one small thing for your future self",                      domains: ["hope", "purpose"] },
-  { text: "spend a few minutes on a skill you're building",               domains: ["mastery", "learning"] },
-  { text: "send one message you've been putting off",                     domains: ["relationships", "stability"] },
-  { text: "listen to a full song and just let yourself be in it",         domains: ["creativity", "play", "hope"] },
-  { text: "write down one thing you're proud of this week",               domains: ["recognition", "autonomy"] },
-  { text: "tidy up your immediate workspace",                             domains: ["stability"] },
-  { text: "check in with how your body is feeling right now",             domains: ["physical", "autonomy"] },
-  { text: "find one small thing to look forward to",                      domains: ["hope", "play"] },
-];
 
 const SUMMARY_MSGS = (neglected, thriving) => {
   if (neglected.length === 0 && thriving.length >= 3) return "things feel pretty nourished right now.";
@@ -286,18 +246,6 @@ function getRandomAction(arr, excludeText = null) {
   return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
-function getMomentumAction(neglectedIds, excludeText = null) {
-  const filtered = excludeText ? MOMENTUM_ACTIONS.filter(a => a.text !== excludeText) : MOMENTUM_ACTIONS;
-  const weighted = [];
-  filtered.forEach(a => {
-    const overlap = neglectedIds?.length
-      ? a.domains.filter(d => neglectedIds.includes(d)).length
-      : 0;
-    const weight = 1 + (overlap * 2);
-    for (let i = 0; i < weight; i++) weighted.push(a);
-  });
-  return weighted[Math.floor(Math.random() * weighted.length)];
-}
 
 function getChangeIndicator(areaId, currentRatings, previousRatings) {
   if (!previousRatings) return null;
@@ -342,6 +290,15 @@ async function saveCheckin(entry) {
     localStorage.setItem("checkin-history", JSON.stringify(trimmed));
     return trimmed;
   } catch { return []; }
+}
+
+async function saveResetEvent(record) {
+  try {
+    const raw = localStorage.getItem("reset-events");
+    const events = raw ? JSON.parse(raw) : [];
+    events.unshift(record);
+    localStorage.setItem("reset-events", JSON.stringify(events.slice(0, 500)));
+  } catch {}
 }
 
 function loadCustomActions() {
@@ -502,9 +459,7 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
   const [tier, setTier] = useState(1);
   const [action, setAction] = useState(null);
   const [confirmation, setConfirmation] = useState("");
-  const [completedCount, setCompletedCount] = useState(0);
-  const [momentumText, setMomentumText] = useState(null);
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [guidedStep, setGuidedStep] = useState(-1);
   const lastText = useRef(null);
 
@@ -527,46 +482,31 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
     lastText.current = a.text;
     show(() => { setTier(1); setAction(a); setPhase("action"); startGuided(a); });
   };
+  useEffect(() => { start(); }, []);
   const done = () => {
-    const newCount = completedCount + 1;
-    setCompletedCount(newCount);
-    if (newCount >= 2) {
-      const ma = getMomentumAction(neglectedIds);
-      setMomentumText(ma.text);
-      show(() => setPhase("momentum"));
-    } else {
-      setConfirmation(CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)]);
-      show(() => setPhase("done"));
-    }
+    saveResetEvent({ ts: Date.now(), tier, outcome: "done", guidance: action?.guided ? "temporal" : "none", actionId: action?.id ?? null, action: action?.text ?? null });
+    setConfirmation(CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)]);
+    show(() => setPhase("done"));
   };
   const notThis = () => {
+    saveResetEvent({ ts: Date.now(), tier, outcome: "skipped", guidance: action?.guided ? "temporal" : "none", actionId: action?.id ?? null, action: action?.text ?? null });
     const next = Math.min(tier + 1, 4);
     const a = getWeightedAction(next, neglectedIds, lastText.current, customActions);
     lastText.current = a.text;
     show(() => { setTier(next); setAction(a); startGuided(a); });
   };
-  const reset = () => show(() => { setPhase("idle"); setTier(1); setAction(null); setGuidedStep(-1); });
-  const commitMomentum = () => show(() => setPhase("momentum-confirmed"));
-  const keepSmall = () => {
-    setCompletedCount(0);
-    show(() => { setPhase("idle"); setTier(1); setAction(null); setGuidedStep(-1); });
+  const again = () => {
+    const a = getWeightedAction(tier, neglectedIds, lastText.current, customActions);
+    lastText.current = a.text;
+    show(() => { setAction(a); setPhase("action"); startGuided(a); });
   };
 
   return (
     <div className="screen reset-screen">
       <button className="back-btn" onClick={onBack}>← back</button>
       <div className={`reset-center ${visible ? "vis" : ""}`}>
-        {phase === "idle" && (
-          <>
-            <p className="reset-tagline">one small thing.<br/>that's all.</p>
-            <button className="big-circle" onClick={start}>begin</button>
-          </>
-        )}
         {phase === "action" && (
           <>
-            <div className="tier-dots">
-              {[1,2,3,4].map(t => <div key={t} className={`tdot ${t === tier ? "on" : ""}`} />)}
-            </div>
             {action?.guided && guidedStep >= 0 && guidedStep < action.guided.length ? (
               <>
                 <p className="action-text">{action.guided[guidedStep]}</p>
@@ -586,23 +526,7 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
         {phase === "done" && (
           <>
             <p className="confirmation">{confirmation}</p>
-            <button className="text-btn" onClick={reset}>again</button>
-          </>
-        )}
-        {phase === "momentum" && (
-          <>
-            <p className="momentum-intro">you're moving. want to keep going?</p>
-            <p className="action-text">{momentumText}</p>
-            <div className="action-btns">
-              <button className="abtn abtn-done" onClick={commitMomentum}>i'll do this</button>
-              <button className="abtn abtn-skip" onClick={keepSmall}>keep it small</button>
-            </div>
-          </>
-        )}
-        {phase === "momentum-confirmed" && (
-          <>
-            <p className="confirmation">go do it.</p>
-            <button className="abtn abtn-done" style={{maxWidth:"220px",width:"100%"}} onClick={onBack}>done</button>
+            <button className="text-btn" onClick={again}>again</button>
           </>
         )}
       </div>
