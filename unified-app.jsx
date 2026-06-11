@@ -461,6 +461,7 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
   const [confirmation, setConfirmation] = useState("");
   const [visible, setVisible] = useState(false);
   const [guidedStep, setGuidedStep] = useState(-1);
+  const [started, setStarted] = useState(false);
   const lastText = useRef(null);
 
   useEffect(() => {
@@ -480,9 +481,10 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
   const start = () => {
     const a = getWeightedAction(1, neglectedIds, null, customActions);
     lastText.current = a.text;
-    show(() => { setTier(1); setAction(a); setPhase("action"); startGuided(a); });
+    show(() => { setTier(1); setAction(a); setPhase("action"); setStarted(false); });
   };
   useEffect(() => { start(); }, []);
+  const startAction = () => { setStarted(true); startGuided(action); };
   const done = () => {
     saveResetEvent({ ts: Date.now(), tier, outcome: "done", guidance: action?.guided ? "temporal" : "none", actionId: action?.id ?? null, action: action?.text ?? null });
     setConfirmation(CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)]);
@@ -493,12 +495,12 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
     const next = Math.min(tier + 1, 4);
     const a = getWeightedAction(next, neglectedIds, lastText.current, customActions);
     lastText.current = a.text;
-    show(() => { setTier(next); setAction(a); startGuided(a); });
+    show(() => { setTier(next); setAction(a); setStarted(false); });
   };
   const again = () => {
     const a = getWeightedAction(tier, neglectedIds, lastText.current, customActions);
     lastText.current = a.text;
-    show(() => { setAction(a); setPhase("action"); startGuided(a); });
+    show(() => { setAction(a); setPhase("action"); setStarted(false); });
   };
 
   return (
@@ -507,7 +509,12 @@ function SoftResetScreen({ onBack, neglectedIds, customActions = [] }) {
       <div className={`reset-center ${visible ? "vis" : ""}`}>
         {phase === "action" && (
           <>
-            {action?.guided && guidedStep >= 0 && guidedStep < action.guided.length ? (
+            {!started ? (
+              <>
+                <p className="action-text">{action?.text}</p>
+                <button className="abtn abtn-done" onClick={startAction}>start</button>
+              </>
+            ) : action?.guided && guidedStep >= 0 && guidedStep < action.guided.length ? (
               <>
                 <p className="action-text">{action.guided[guidedStep]}</p>
                 <button className="abtn abtn-skip guided-escape" onClick={notThis}>not this one</button>
